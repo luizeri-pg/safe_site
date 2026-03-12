@@ -1,0 +1,117 @@
+.dashboard {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  margin-bottom: 1.75rem;
+}
+
+.dashboard-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.03em;
+}
+
+.dashboard-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(241, 245, 249, 0.7);
+}
+
+.dashboard-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.dashboard-kpi {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+}
+
+.dashboard-kpi-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.dashboard-kpi-icon--teal {
+  background: rgba(0, 172, 212, 0.25);
+  color: #00ACD4;
+}
+
+.dashboard-kpi-icon--blue {
+  background: rgba(0, 135, 166, 0.3);
+  color: #0087A6;
+}
+
+.dashboard-kpi-icon--gray {
+  background: rgba(100, 116, 139, 0.25);
+  color: #94a3b8;
+}
+
+.dashboard-kpi-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.dashboard-kpi-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  line-height: 1.2;
+}
+
+.dashboard-kpi-label {
+  font-size: 0.8rem;
+  color: rgba(241, 245, 249, 0.7);
+}
+
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 800px) {
+  .dashboard-charts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.dashboard-card {
+  padding: 1.35rem;
+  background: rgba(30, 41, 59, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+}
+
+.dashboard-card-title {
+  margin: 0 0 1.1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.dashboard-chart-wrap {
+  width: 100%;
+}

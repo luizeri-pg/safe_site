@@ -1,0 +1,235 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #1A2534;
+}
+
+.app-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+  min-height: 100vh;
+  background: #1A2534;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  transition: width 0.25s ease;
+}
+
+.app-sidebar--closed {
+  width: 72px;
+}
+
+.app-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1rem 1rem 1.25rem;
+  min-height: 64px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.app-sidebar-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  background: #00ACD4;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.app-sidebar-close:hover {
+  background: #0095b8;
+}
+
+.app-sidebar-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #00ACD4;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.app-sidebar-logo:hover {
+  color: #2ACDEA;
+}
+
+.app-sidebar-nav {
+  flex: 1;
+  padding: 0.75rem 0;
+  overflow-y: auto;
+}
+
+.app-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1.25rem;
+  margin: 0 0.5rem 0.2rem;
+  color: rgba(241, 245, 249, 0.85);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.app-sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+}
+
+.app-sidebar-link--active {
+  background: rgba(0, 172, 212, 0.3);
+  color: #fff;
+}
+
+.app-sidebar-link svg {
+  flex-shrink: 0;
+}
+
+.app-sidebar--closed .app-sidebar-link span {
+  display: none;
+}
+
+.app-sidebar--closed .app-sidebar-link {
+  justify-content: center;
+  padding: 0.75rem;
+}
+
+.app-sidebar-group-wrap {
+  margin-bottom: 0.25rem;
+}
+
+.app-sidebar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(241, 245, 249, 0.9);
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.app-sidebar-group:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.app-sidebar-group svg:first-of-type {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.app-sidebar-group-label {
+  flex: 1;
+}
+
+.app-sidebar-group-arrow {
+  flex-shrink: 0;
+  color: rgba(241, 245, 249, 0.6);
+}
+
+.app-sidebar-sub {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.app-sidebar-sublink {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 1rem 0.55rem 2.5rem;
+  font-size: 0.875rem;
+  color: rgba(241, 245, 249, 0.85);
+  text-decoration: none;
+  border-radius: 8px;
+  margin: 0 0.5rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.app-sidebar-sublink:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f1f5f9;
+}
+
+.app-sidebar-sublink--active {
+  background: rgba(0, 172, 212, 0.25);
+  color: #fff;
+}
+
+.app-sidebar-sublink--active:hover {
+  background: rgba(0, 172, 212, 0.35);
+}
+
+.app-sidebar-sublink svg {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.app-sidebar-footer {
+  padding: 1rem 1rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.app-sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: rgba(248, 113, 113, 0.95);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  border-radius: 6px;
+}
+
+.app-sidebar-logout:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.app-sidebar--closed .app-sidebar-logout span {
+  display: none;
+}
+
+.app-sidebar--closed .app-sidebar-logout {
+  justify-content: center;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .app-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .app-sidebar--closed {
+    width: 72px;
+  }
+
+  .app-main {
+    margin-left: 0;
+  }
+}
