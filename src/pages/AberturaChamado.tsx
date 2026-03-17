@@ -1,8 +1,8 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { apiFetch, getApiBase } from '@/services/api';
-import { Search, Ticket, Calendar, AlertCircle, Building2 } from 'lucide-react';
+import { Search, Ticket, Calendar, AlertCircle, Building2, CircleCheck } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -66,6 +66,7 @@ function formatDate(s: string) {
 
 export default function AberturaChamado() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { token, userEmpresaNome, userEmpresaRazaoSocial, userEmpresaCnpj } = useAuth();
   const basePath = '/abertura-chamado';
   const pathEnd = location.pathname.replace(basePath, '').replace(/^\//, '') || 'gera-chamado';
@@ -88,6 +89,7 @@ export default function AberturaChamado() {
 
   const [activeStep, setActiveStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // --- Painel (dados da API)
   const [busca, setBusca] = useState('');
@@ -159,12 +161,17 @@ export default function AberturaChamado() {
       const res = await apiFetch('/api/chamados', token, { method: 'POST', body: JSON.stringify(payload) });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error((data as { mensagem?: string }).mensagem ?? 'Falha ao enviar');
-      alert('Chamado registrado. Número de protocolo será gerado em breve.');
+      setShowSuccessModal(true);
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Falha ao enviar');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const voltarParaChamados = () => {
+    setShowSuccessModal(false);
+    navigate('/abertura-chamado/painel');
   };
 
   // ========== PAINEL DE ACOMPANHAMENTO ==========
@@ -444,6 +451,34 @@ export default function AberturaChamado() {
           )}
         </div>
       </form>
+
+      {showSuccessModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="chamado-success-title"
+        >
+          <Card className="w-full max-w-md shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <CardHeader>
+              <div className="flex flex-col items-center gap-3 text-center">
+                <div className="rounded-full bg-primary/10 p-3">
+                  <CircleCheck className="size-10 text-primary" />
+                </div>
+                <CardTitle id="chamado-success-title" className="text-xl">Chamado registrado</CardTitle>
+                <CardDescription className="text-base">
+                  Número de protocolo será gerado em breve.
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="flex justify-center pb-6">
+              <Button onClick={voltarParaChamados} size="lg">
+                Voltar para Abertura de Chamado
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </PageContent>
   );
 }
