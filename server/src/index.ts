@@ -2,6 +2,9 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { authRouter } from './routes/auth.js';
+import { adminRouter } from './routes/admin.js';
+import { empresasRouter } from './routes/empresas.js';
+import { usuariosRouter } from './routes/usuarios.js';
 import { solicitacoesRouter } from './routes/solicitacoes.js';
 import { catsRouter } from './routes/cats.js';
 import { chamadosRouter } from './routes/chamados.js';
@@ -33,6 +36,9 @@ app.use(
 app.use(express.json());
 
 app.use('/auth', authRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/empresas', empresasRouter);
+app.use('/api/usuarios', usuariosRouter);
 app.use('/api/solicitacoes', solicitacoesRouter);
 app.use('/api/cats', catsRouter);
 app.use('/api/chamados', chamadosRouter);

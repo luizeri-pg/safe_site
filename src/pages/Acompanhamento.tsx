@@ -239,8 +239,10 @@ export default function Acompanhamento() {
               <p className="text-center text-sm text-muted-foreground">
                 {erroApi ? (
                   <span className="text-destructive">{erroApi}</span>
+                ) : !apiConfigurada ? (
+                  'Configure a API (VITE_API_URL) e faça login para listar as solicitações.'
                 ) : (
-                  'Nenhuma solicitação encontrada. Configure a API e faça login como administrador.'
+                  'Nenhuma solicitação encontrada. Crie solicitações (CAT, PPP, Cargo, etc.) para vê-las aqui.'
                 )}
               </p>
             </div>
@@ -448,6 +450,12 @@ export default function Acompanhamento() {
                         </span>
                       </dd>
                     </div>
+                    {modalDetalhe?.referencia_id && (
+                      <div className="sm:col-span-2">
+                        <dt className="text-muted-foreground">Referência (ID da entidade)</dt>
+                        <dd className="font-mono text-xs break-all">{modalDetalhe.referencia_id}</dd>
+                      </div>
+                    )}
                     {(modalSolicitacao.descricao || (modalDetalhe?.descricao && !modalSolicitacao.descricao)) && (
                       <div className="sm:col-span-2">
                         <dt className="text-muted-foreground">Descrição</dt>
@@ -516,6 +524,28 @@ export default function Acompanhamento() {
                             <dd>{modalDetalhe.solicitante.telefone}</dd>
                           </div>
                         )}
+                      </dl>
+                    </div>
+                  )}
+
+                  {modalDetalhe?.payload != null && typeof modalDetalhe.payload === 'object' && Object.keys(modalDetalhe.payload as object).length > 0 && (
+                    <div className="mt-4 rounded-lg border border-border bg-muted/20 p-4">
+                      <p className="mb-3 text-sm font-medium text-foreground">Dados específicos da solicitação</p>
+                      <dl className="grid grid-cols-1 gap-x-4 gap-y-2 text-sm sm:grid-cols-2">
+                        {Object.entries(modalDetalhe.payload as Record<string, unknown>)
+                          .filter(([, v]) => v != null && v !== '')
+                          .map(([key, value]) => {
+                            const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()).trim();
+                            const display = typeof value === 'object'
+                              ? (Array.isArray(value) ? value.join(', ') : JSON.stringify(value))
+                              : String(value);
+                            return (
+                              <div key={key} className={display.length > 80 ? 'sm:col-span-2' : undefined}>
+                                <dt className="text-muted-foreground">{label}</dt>
+                                <dd className="mt-0.5 break-words">{display}</dd>
+                              </div>
+                            );
+                          })}
                       </dl>
                     </div>
                   )}
