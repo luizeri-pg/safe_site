@@ -58,13 +58,13 @@ router.get('/:id', async (req, res: Response): Promise<void> => {
 router.post('/', async (req: Request<object, object, { payload?: unknown }>, res: Response): Promise<void> => {
   const auth = getAuth(res);
   const payload = req.body?.payload ?? req.body;
-  let empresaId = auth.empresaId;
+  let empresaId: string | null = auth.empresaId;
 
   if (!empresaId && payload && typeof payload === 'object') {
     const p = payload as { empresa?: { cnpj?: string } };
     if (p.empresa?.cnpj) {
       const emp = await prisma.empresa.findFirst({ where: { cnpj: p.empresa!.cnpj } });
-      empresaId = emp?.id ?? undefined;
+      empresaId = emp?.id ?? null;
     }
   }
   if (!empresaId) {

@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import {
   Building2,
   User,
@@ -168,8 +168,6 @@ export default function AberturaCat() {
 
   const [activeStep, setActiveStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const goToStep = useCallback((step: number) => setActiveStep(step), []);
-
   const toggleParteCorpo = (parte: string) =>
     setPartesCorpo((prev) => ({ ...prev, [parte]: !prev[parte] }));
 

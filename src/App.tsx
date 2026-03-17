@@ -18,6 +18,7 @@ import AdminEmpresas from './pages/admin/AdminEmpresas';
 import AdminUsuarios from './pages/admin/AdminUsuarios';
 import AdminRelatorios from './pages/admin/AdminRelatorios';
 import AdminConfiguracoes from './pages/admin/AdminConfiguracoes';
+import Perfil from './pages/Perfil';
 import './App.css';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
             }
           >
             <Route index element={<DashboardOrRedirect />} />
+            <Route path="perfil" element={<Perfil />} />
             <Route path="admin/dashboard" element={<AdminDashboard />} />
             <Route path="admin/empresas" element={<AdminEmpresas />} />
             <Route path="admin/usuarios" element={<AdminUsuarios />} />

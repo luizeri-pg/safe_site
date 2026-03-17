@@ -1,5 +1,6 @@
 import { Router, type Response } from 'express';
 import { prisma } from '../lib/prisma.js';
+import type { Prisma } from '@prisma/client';
 import { authMiddleware, type AuthLocals } from '../middleware/auth.js';
 
 const router = Router();
@@ -10,7 +11,7 @@ router.get('/', async (req, res: Response): Promise<void> => {
   const auth = (res.locals as unknown as { auth: AuthLocals }).auth;
   const { tipo, status, busca } = req.query as { tipo?: string; status?: string; busca?: string };
 
-  const where: { empresaId?: string; tipo?: string; status?: string; OR?: unknown[] } = {};
+  const where: Prisma.SolicitacaoWhereInput = {};
   if (auth.role === 'client' && auth.empresaId) {
     where.empresaId = auth.empresaId;
   }
@@ -32,7 +33,7 @@ router.get('/', async (req, res: Response): Promise<void> => {
 
   const dados = list.map((s) => ({
     id: s.id,
-    empresa: s.empresa.nomeFantasia ?? s.empresa.razaoSocial,
+    empresa: s.empresa?.nomeFantasia ?? s.empresa?.razaoSocial ?? '',
     tipo: s.tipo,
     data: s.data,
     status: s.status,
@@ -73,7 +74,7 @@ router.patch('/:id', async (req, res: Response): Promise<void> => {
 
   res.json({
     id: updated.id,
-    empresa: updated.empresa.nomeFantasia ?? updated.empresa.razaoSocial,
+    empresa: updated.empresa?.nomeFantasia ?? updated.empresa?.razaoSocial ?? '',
     tipo: updated.tipo,
     data: updated.data,
     status: updated.status,

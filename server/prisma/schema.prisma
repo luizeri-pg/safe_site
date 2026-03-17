@@ -5,12 +5,15 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["public", "auth"]
 }
 
 // --- Auth e estrutura ---
 model Empresa {
+  @@schema("public")
   id           String   @id @default(cuid())
   razaoSocial  String
   nomeFantasia String?
@@ -32,6 +35,7 @@ model Empresa {
 }
 
 model Usuario {
+  @@schema("public")
   id           String   @id @default(cuid())
   empresaId    String?
   email        String   @unique
@@ -45,6 +49,7 @@ model Usuario {
 
 // Listagem unificada para tela de Acompanhamento (admin vê todas; client vê da sua empresa)
 model Solicitacao {
+  @@schema("public")
   id           Int      @id @default(autoincrement())
   tipo         String   // 'Manuais e Procedimentos', 'Solicitação de PPP', 'Abertura de CAT', etc.
   referenciaId String   // id (cuid) da entidade correspondente
@@ -60,6 +65,7 @@ model Solicitacao {
 
 // --- Abertura de CAT ---
 model Cat {
+  @@schema("public")
   id        String   @id @default(cuid())
   empresaId String
   payload   String   // JSON: empregador, trabalhador, atividadeMomento, localIncidente, dadosAcidente, lesao, epc, episUtilizados, seguranca, atendimentoMedico, responsavel
@@ -72,6 +78,7 @@ model Cat {
 
 // --- Abertura de Chamado ---
 model Chamado {
+  @@schema("public")
   id                   String   @id @default(cuid())
   numero               String?  // gerado pelo backend (ex: 2025-001)
   empresaId            String
@@ -92,6 +99,7 @@ model Chamado {
 
 // --- Inclusão de Cargo ---
 model Cargo {
+  @@schema("public")
   id                  String   @id @default(cuid())
   empresaId           String
   nomeCargo           String
@@ -110,6 +118,7 @@ model Cargo {
 
 // --- Inclusão de Setor | GHE ---
 model SetorGhe {
+  @@schema("public")
   id               String   @id @default(cuid())
   empresaId        String
   nomeSetor        String
@@ -127,6 +136,7 @@ model SetorGhe {
 
 // --- Inclusão de Nova Unidade ---
 model Unidade {
+  @@schema("public")
   id                String   @id @default(cuid())
   empresaId         String
   nomeUnidade       String
@@ -146,6 +156,7 @@ model Unidade {
 
 // --- Solicitação de PPP (payload JSON com historicos e epis) ---
 model SolicitacaoPpp {
+  @@schema("public")
   id        String   @id @default(cuid())
   empresaId String
   payload   String   // JSON: empresa, trabalhador, cat, historicos, epis, avaliacao ambiental, responsável legal, etc.
@@ -158,6 +169,7 @@ model SolicitacaoPpp {
 
 // --- Solicitação de Visita Técnica ---
 model VisitaTecnica {
+  @@schema("public")
   id                   String   @id @default(cuid())
   empresaId            String
   objetivoVisita       String?

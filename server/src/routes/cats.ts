@@ -65,12 +65,12 @@ router.post('/', async (req: Request<object, object, { payload: unknown }>, res:
   }
 
   // Se cliente, usar empresa do token; senão pode vir no body (admin criando por outra empresa)
-  let empresaIdFinal = auth.empresaId;
+  let empresaIdFinal: string | null = auth.empresaId;
   if (req.body?.payload && typeof req.body.payload === 'object') {
     const p = req.body.payload as { empregador?: { cnpj?: string } };
     if (p.empregador?.cnpj && !empresaIdFinal) {
       const emp = await prisma.empresa.findFirst({ where: { cnpj: p.empregador.cnpj } });
-      empresaIdFinal = emp?.id ?? undefined;
+      empresaIdFinal = emp?.id ?? null;
     }
   }
   if (!empresaIdFinal) {

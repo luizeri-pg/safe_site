@@ -81,10 +81,10 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
     solicitante?: { nome?: string; email?: string; telefone?: string };
   };
 
-  let empresaId = auth.empresaId;
+  let empresaId: string | null = auth.empresaId;
   if (!empresaId && body.empresa?.cnpj) {
     const emp = await prisma.empresa.findFirst({ where: { cnpj: body.empresa!.cnpj } });
-    empresaId = emp?.id ?? undefined;
+    empresaId = emp?.id ?? null;
   }
   if (!empresaId) {
     res.status(400).json({ mensagem: 'Empresa não identificada' });

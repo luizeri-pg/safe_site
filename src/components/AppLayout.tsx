@@ -19,6 +19,7 @@ import {
   BarChart3,
   Building2,
   Users,
+  User,
   FileDown,
   Settings,
 } from 'lucide-react';
@@ -226,7 +227,20 @@ export default function AppLayout() {
           )}
         </nav>
 
-        <div className="border-t border-sidebar-border p-4">
+        <div className="border-t border-sidebar-border p-4 space-y-1">
+          <Link
+            to="/perfil"
+            className={cn(
+              'flex w-full items-center gap-2 rounded-md py-2 text-sm font-medium transition-colors',
+              'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+              !sidebarOpen && 'justify-center',
+              location.pathname === '/perfil' && 'bg-sidebar-accent/50'
+            )}
+            title="Meu perfil"
+          >
+            <User size={20} className="shrink-0" />
+            {sidebarOpen && <span>Perfil</span>}
+          </Link>
           <button
             type="button"
             onClick={logout}

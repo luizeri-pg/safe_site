@@ -4,10 +4,11 @@ interface PageContentProps {
   children: React.ReactNode;
   className?: string;
   /** Largura máxima do conteúdo (padrão: 6xl) */
-  maxWidth?: '4xl' | '5xl' | '6xl' | '7xl' | 'full';
+  maxWidth?: '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full';
 }
 
 const maxWidthClass = {
+  '2xl': 'max-w-2xl',
   '4xl': 'max-w-4xl',
   '5xl': 'max-w-5xl',
   '6xl': 'max-w-6xl',

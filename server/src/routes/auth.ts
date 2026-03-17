@@ -65,7 +65,7 @@ router.post('/login', async (req: Request<object, object, LoginBody>, res: Respo
       empresaId: user.empresaId,
     },
     JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
+    { expiresIn: expiresInSeconds }
   );
 
   res.json({

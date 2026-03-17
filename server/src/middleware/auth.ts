@@ -23,7 +23,7 @@ export interface AuthLocals {
 
 export async function authMiddleware(
   req: Request,
-  res: Response<{ mensagem?: string }, Record<string, unknown>, unknown>,
+  res: Response<{ mensagem?: string }, Record<string, unknown>>,
   next: NextFunction
 ): Promise<void> {
   const auth = req.headers.authorization;
@@ -60,7 +60,7 @@ export async function authMiddleware(
 /** Opcional: só exige auth se token for enviado; útil para rotas que podem ser públicas */
 export async function optionalAuth(
   req: Request,
-  res: Response,
+  res: Response<unknown, Record<string, unknown>>,
   next: NextFunction
 ): Promise<void> {
   const auth = req.headers.authorization;

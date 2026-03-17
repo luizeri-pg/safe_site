@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -57,8 +57,6 @@ export default function InclusaoCargo() {
 
   const [activeStep, setActiveStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const goToStep = useCallback((step: number) => setActiveStep(step), []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {

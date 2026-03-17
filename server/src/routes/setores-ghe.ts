@@ -47,17 +47,18 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
     solicitacao?: { dataSolicitacao?: string; nomeSolicitante?: string };
   };
 
-  let empresaId = auth.empresaId;
+  let empresaId: string | null = auth.empresaId;
   if (!empresaId && body.empresa?.cnpj) {
     const emp = await prisma.empresa.findFirst({ where: { cnpj: body.empresa!.cnpj } });
-    empresaId = emp?.id ?? undefined;
+    empresaId = emp?.id ?? null;
   }
   if (!empresaId) {
     res.status(400).json({ mensagem: 'Empresa não identificada' });
     return;
   }
 
-  const sg = body.setorGhe ?? {};
+  type SetorGheBody = { nomeSetor?: string; codigoSetor?: string; codigoGhe?: string; descricaoSetor?: string };
+  const sg = (body.setorGhe ?? {}) as SetorGheBody;
   const s = body.solicitacao ?? {};
   const setor = await prisma.setorGhe.create({
     data: {
