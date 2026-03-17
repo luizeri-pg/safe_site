@@ -72,7 +72,7 @@ export function LoginForm({
             type="submit"
             disabled={isLoading}
             size="lg"
-            className="w-full"
+            className="w-full border-2 border-white"
           >
             {isLoading ? "Entrando..." : "Entrar"}
           </Button>
