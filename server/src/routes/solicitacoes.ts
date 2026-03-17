@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma.js';
 import type { Prisma } from '@prisma/client';
 import { authMiddleware, type AuthLocals } from '../middleware/auth.js';
 
-const router = Router();
+const router: Router = Router();
 router.use(authMiddleware);
 
 // GET /api/solicitacoes?tipo=&status=&busca= — listagem unificada (dados só do BD)

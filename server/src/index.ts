@@ -14,7 +14,22 @@ import { visitasRouter } from './routes/visitas.js';
 const app = express();
 const PORT = process.env.PORT ?? 3001;
 
-app.use(cors({ origin: true, credentials: true }));
+// CORS: aceita front em produção (Railway) e em dev (localhost)
+const allowedOrigins = [
+  'https://safesite-production.up.railway.app',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()) : []),
+];
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin || allowedOrigins.includes(origin)) return cb(null, origin || allowedOrigins[0]);
+      return cb(null, false);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.use('/auth', authRouter);

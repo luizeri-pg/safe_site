@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma.js';
 import { authMiddleware, type AuthLocals } from '../middleware/auth.js';
 import { criarSolicitacao } from '../lib/solicitacao.js';
 
-const router = Router();
+const router: Router = Router();
 router.use(authMiddleware);
 
 function getAuth(res: Response): AuthLocals {

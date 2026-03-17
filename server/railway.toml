@@ -1,0 +1,11 @@
+# Config do backend Safe-Site para Railway (monorepo)
+# Este serviço deve ter Root Directory = "server" nas configurações do Railway.
+
+[build]
+builder = "nixpacks"
+buildCommand = "pnpm install && npx prisma generate && pnpm run build"
+
+[deploy]
+startCommand = "pnpm run start"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
