@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Build outputs
+backend/**/bin/
+backend/**/obj/
+
+# Env e BD local (não versionar segredos)
+.env
+.env.local
+server/.env
+server/prisma/*.db
+server/prisma/*.db-journal

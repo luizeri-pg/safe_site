@@ -15,7 +15,7 @@ public class SolicitacoesService : ISolicitacoesService
 
     public async Task<List<SolicitacaoDto>> ListarTodasAsync(string? tipo, string? status, string? busca, CancellationToken ct = default)
     {
-        var query = _db.Solicitacoes.AsNoTracking();
+        var query = _db.Solicitacoes.Include(s => s.Empresa).AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(tipo))
             query = query.Where(s => s.Tipo == tipo);
@@ -25,20 +25,21 @@ public class SolicitacoesService : ISolicitacoesService
 
         if (!string.IsNullOrWhiteSpace(busca))
         {
-            var b = busca.Trim().ToLower();
+            var b = busca.Trim();
             query = query.Where(s =>
-                s.Empresa.ToLower().Contains(b) ||
-                (s.Tipo != null && s.Tipo.ToLower().Contains(b)));
+                (s.Descricao != null && s.Descricao.Contains(b)) ||
+                (s.Tipo != null && s.Tipo.Contains(b)) ||
+                s.ReferenciaId.Contains(b));
         }
 
         return await query
-            .OrderByDescending(s => s.DataCriacao)
+            .OrderByDescending(s => s.CreatedAt)
             .Select(s => new SolicitacaoDto
             {
                 Id = s.Id,
-                Empresa = s.Empresa,
+                Empresa = s.Empresa.NomeFantasia ?? s.Empresa.RazaoSocial,
                 Tipo = s.Tipo,
-                Data = s.DataCriacao.ToString("yyyy-MM-dd"),
+                Data = s.Data,
                 Status = s.Status,
                 Descricao = s.Descricao
             })
@@ -47,7 +48,7 @@ public class SolicitacoesService : ISolicitacoesService
 
     public async Task<SolicitacaoDto?> AtualizarAsync(int id, AtualizarSolicitacaoRequest request, CancellationToken ct = default)
     {
-        var item = await _db.Solicitacoes.FindAsync(new object[] { id }, ct);
+        var item = await _db.Solicitacoes.Include(s => s.Empresa).FirstOrDefaultAsync(s => s.Id == id, ct);
         if (item == null) return null;
 
         if (!string.IsNullOrWhiteSpace(request.Status))
@@ -60,9 +61,9 @@ public class SolicitacoesService : ISolicitacoesService
         return new SolicitacaoDto
         {
             Id = item.Id,
-            Empresa = item.Empresa,
+            Empresa = item.Empresa.NomeFantasia ?? item.Empresa.RazaoSocial,
             Tipo = item.Tipo,
-            Data = item.DataCriacao.ToString("yyyy-MM-dd"),
+            Data = item.Data,
             Status = item.Status,
             Descricao = item.Descricao
         };

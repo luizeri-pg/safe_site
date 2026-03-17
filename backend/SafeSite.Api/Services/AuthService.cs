@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SafeSite.Api.Data;
 using SafeSite.Api.DTOs;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace SafeSite.Api.Services;
 
@@ -21,33 +22,41 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken ct = default)
     {
+        var email = (request.Username ?? "").Trim().ToLowerInvariant();
         var user = await _db.Usuarios
+            .Include(u => u.Empresa)
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.UserName == request.Username, ct);
+            .FirstOrDefaultAsync(u => u.Email == email, ct);
 
-        if (user == null || user.PasswordHash != request.Password)
+        if (user == null || !BCryptNet.Verify(request.Password ?? "", user.PasswordHash))
         {
             return new LoginResponse
             {
                 Sucesso = false,
                 Mensagem = "Usuário ou senha inválidos",
                 TempoProcessamento = 0,
+                RequisicaoId = Guid.NewGuid().ToString(),
                 Resultado = null
             };
         }
 
-        var expiresMinutes = _config.GetValue<int>("Jwt:ExpiresMinutes", 30);
-        var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? "SafeSite-ChaveSecreta-Minimo32Caracteres!");
-        var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
+        var expiresMinutes = _config.GetValue("Jwt:ExpiresInMinutes", 30);
+        var secret = _config["Jwt:Secret"] ?? "dev-secret-min-32-chars!!!!!!!!!!!";
+        var key = Encoding.UTF8.GetBytes(secret);
+        var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>
         {
-            new(ClaimTypes.Name, user.UserName),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.Email, user.Email),
             new(ClaimTypes.Role, user.Role)
         };
+        if (!string.IsNullOrEmpty(user.EmpresaId))
+            claims.Add(new Claim("empresa_id", user.EmpresaId));
 
         var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(expiresMinutes),
             signingCredentials: credentials
@@ -58,13 +67,18 @@ public class AuthService : IAuthService
         {
             Sucesso = true,
             Mensagem = null,
-            TempoProcessamento = new Random().Next(30, 80),
+            TempoProcessamento = 0,
+            RequisicaoId = Guid.NewGuid().ToString(),
             Resultado = new AuthResult
             {
                 ExpiresIn = expiresMinutes * 60,
                 AccessToken = tokenString,
                 TokenType = "Bearer",
-                Role = user.Role
+                Role = user.Role,
+                EmpresaId = user.EmpresaId,
+                EmpresaNome = user.Empresa?.NomeFantasia ?? user.Empresa?.RazaoSocial,
+                EmpresaRazaoSocial = user.Empresa?.RazaoSocial,
+                EmpresaCnpj = user.Empresa?.Cnpj
             }
         };
     }

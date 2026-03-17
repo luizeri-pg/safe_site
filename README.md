@@ -10,9 +10,22 @@ Aplicação com tela de login e autenticação Bearer (expiração 30 minutos).
    npm install
    ```
 
-2. **API de login:**
+2. **API de login e backend:**
    - **Mock local (testes):** deixe `VITE_API_URL` vazio ou use `http://localhost:5173`. O Vite responde a `POST /auth/login` com um token fake. Qualquer usuário/senha funciona.
-   - **API real:** no `.env`, defina `VITE_API_URL=https://sua-api.com` (só a origem, sem `/auth/login`).
+   - **API real (backend do projeto):** o backend está em **C# (ASP.NET Core)** com **PostgreSQL**. Veja a pasta **`backend/`** e o `backend/README.md`. Configure `VITE_API_URL=http://localhost:3001` no `.env` da raiz, suba o PostgreSQL, ajuste a connection string no backend e rode `dotnet run` em `backend/SafeSite.Api`. Todos os dados das telas vêm do BD e da API; o front só envia submissões e consome as rotas.
+   - **Outra API:** no `.env`, defina `VITE_API_URL=https://sua-api.com` (só a origem, sem `/auth/login`).
+
+## Acesso (backend C#)
+
+Após subir o backend e configurar `VITE_API_URL`:
+
+| Perfil   | Usuário                   | Senha     | Uso |
+|----------|---------------------------|-----------|-----|
+| **Admin**| `admin@safesite.com`      | `admin123`| Acompanhamento de **todas** as solicitações |
+| Cliente  | `cliente@empresaalpha.com`| `admin123`| Área do cliente (Empresa Alpha) |
+| Cliente  | `safe.teste`              | `safeteste`| Área do cliente (Safe Gestão) |
+
+A rota inicial redireciona: **admin** → `/acompanhamento`; **cliente** → Dashboard.
 
 ## Login
 

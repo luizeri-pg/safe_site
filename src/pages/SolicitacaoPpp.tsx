@@ -1,20 +1,6 @@
 import { useLocation } from 'react-router-dom';
-import { useState, useCallback } from 'react';
-import {
-  Plus,
-  Trash2,
-  Building2,
-  User,
-  AlertTriangle,
-  Briefcase,
-  Leaf,
-  Shield,
-  HelpCircle,
-  Scale,
-  FileEdit,
-  Play,
-  Sparkles,
-} from 'lucide-react';
+import { useState } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -41,60 +27,23 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Stepper,
-  StepperItem,
-  StepperTrigger,
-  StepperIndicator,
-  StepperSeparator,
-  StepperTitle,
-  StepperDescription,
-  useStepper,
-} from '@/components/ui/stepper';
-import { cn } from '@/lib/utils';
+import { PageHeader } from '@/components/PageHeader';
+import { PageContent } from '@/components/PageContent';
+import SolicitacoesPorTipoList from '@/components/SolicitacoesPorTipoList';
+import { useAuth } from '@/contexts/AuthContext';
+import { apiFetch, getApiBase } from '@/services/api';
 import './SolicitacaoPpp.css';
 
-/** Indicador do step com badge (play = ativo, estrela = inativo/concluído) no canto */
-function StepIndicatorWithBadge({
-  step,
-  icon: Icon,
-}: {
-  step: number;
-  icon?: React.ComponentType<{ className?: string }>;
-}) {
-  const { activeStep } = useStepper();
-  const state = step < activeStep ? 'completed' : step === activeStep ? 'active' : 'inactive';
-  return (
-    <span className="relative inline-flex shrink-0">
-      <StepperIndicator className="bg-muted">
-        {Icon ? <Icon className="size-4" /> : <span>{step}</span>}
-      </StepperIndicator>
-      <span
-        className={cn(
-          'ppp-step-badge absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full border-2',
-          state === 'active' ? 'bg-white text-[#00ACD4]' : 'bg-white/90 text-slate-500'
-        )}
-      >
-        {state === 'active' ? (
-          <Play className="size-2.5 fill-current" />
-        ) : (
-          <Sparkles className="size-2.5" />
-        )}
-      </span>
-    </span>
-  );
-}
-
 const PPP_STEPS = [
-  { step: 1, title: 'Empresa', description: 'Dados cadastrais', icon: Building2 },
-  { step: 2, title: 'Trabalhador', description: 'Identificação e vínculo', icon: User },
-  { step: 3, title: 'CAT', description: 'Comunicação de acidente', icon: AlertTriangle },
-  { step: 4, title: 'Histórico', description: 'Trabalho do funcionário', icon: Briefcase },
-  { step: 5, title: 'Aval. ambiental', description: 'Programas ambientais', icon: Leaf },
-  { step: 6, title: 'EPIs', description: 'Fornecidos e CA', icon: Shield },
-  { step: 7, title: 'Perg. EPI', description: 'Sim ou Não', icon: HelpCircle },
-  { step: 8, title: 'Resp. legal', description: 'Representante', icon: Scale },
-  { step: 9, title: 'Solicitação', description: 'Data e solicitante', icon: FileEdit },
+  { step: 1, title: 'Empresa' },
+  { step: 2, title: 'Trabalhador' },
+  { step: 3, title: 'CAT' },
+  { step: 4, title: 'Histórico' },
+  { step: 5, title: 'Aval. ambiental' },
+  { step: 6, title: 'EPIs' },
+  { step: 7, title: 'Perg. EPI' },
+  { step: 8, title: 'Resp. legal' },
+  { step: 9, title: 'Solicitação' },
 ] as const;
 
 /** Um período do histórico de trabalho */
@@ -139,6 +88,7 @@ const emptyEpi = (): EpiItem => ({
 
 export default function SolicitacaoPpp() {
   const location = useLocation();
+  const { token, userEmpresaRazaoSocial, userEmpresaCnpj } = useAuth();
   const basePath = '/solicitacao-ppp';
   const pathEnd = location.pathname.replace(basePath, '').replace(/^\//, '') || 'arquivos';
   const isAdicionar = pathEnd === 'adicionar';
@@ -193,7 +143,7 @@ export default function SolicitacaoPpp() {
   const [nomeSolicitante, setNomeSolicitante] = useState('');
 
   const [activeStep, setActiveStep] = useState(1);
-  const goToStep = useCallback((step: number) => setActiveStep(step), []);
+  const [submitting, setSubmitting] = useState(false);
 
   const addHistorico = () => setHistoricos((prev) => [...prev, emptyHistorico()]);
   const removeHistorico = (id: string) =>
@@ -209,11 +159,15 @@ export default function SolicitacaoPpp() {
   const updateEpi = (id: string, field: keyof EpiItem, value: string) =>
     setEpis((prev) => prev.map((e) => (e.id === id ? { ...e, [field]: value } : e)));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: enviar para API
     const payload = {
-      empresa: { razaoSocial, cnpj, ceiCaepfCno, cnae },
+      empresa: {
+        razaoSocial: userEmpresaRazaoSocial ?? razaoSocial,
+        cnpj: userEmpresaCnpj ?? cnpj,
+        ceiCaepfCno,
+        cnae,
+      },
       trabalhador: {
         nomeCompleto,
         cpf,
@@ -245,107 +199,103 @@ export default function SolicitacaoPpp() {
       },
       solicitacao: { dataSolicitacao, nomeSolicitante },
     };
-    console.log('PPP submit', payload);
-    alert('Solicitação de PPP registrada. Em breve você poderá enviar para o sistema.');
+    if (!getApiBase() || !token) {
+      alert('Solicitação registrada (modo offline). Configure a API e faça login para enviar ao servidor.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await apiFetch('/api/ppp', token, { method: 'POST', body: JSON.stringify({ payload }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error((data as { mensagem?: string }).mensagem ?? 'Falha ao enviar');
+      alert('Solicitação de PPP registrada. Em breve você poderá enviar para o sistema.');
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Falha ao enviar');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!isAdicionar) {
     return (
-      <div className="ppp-page dark w-full px-6 py-6">
-        <div className="ppp-page__inner mx-auto">
-          <header className="ppp-page__header text-center mb-8">
-            <h1 className="ppp-page__title">Solicitação de PPP</h1>
-            <p className="ppp-page__subtitle">Todos os registros</p>
-          </header>
-          <Card className="ppp-card">
-            <CardContent className="pt-6">
-              <p className="text-center text-muted-foreground py-8">
-                Nenhum registro. Use &quot;Adicionar&quot; no menu para criar uma nova solicitação.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <SolicitacoesPorTipoList
+        tipo="Solicitação de PPP"
+        title="Solicitação de PPP"
+        description="Perfil Profissiográfico Previdenciário (INSS / SAFE) — suas solicitações"
+        basePath="/solicitacao-ppp"
+        addLabel="Adicionar"
+      />
     );
   }
 
   return (
-    <div className="ppp-page dark w-full px-6 py-6 pb-12">
-      <div className="ppp-page__inner mx-auto">
-        <header className="ppp-page__header text-center mb-8">
-          <h1 className="ppp-page__title">Solicitação de PPP</h1>
-          <p className="ppp-page__subtitle">Perfil Profissiográfico Previdenciário (INSS / SAFE)</p>
-        </header>
+    <PageContent maxWidth="6xl" className="pb-16 ppp-form-page">
+      <PageHeader
+        title="Solicitação de PPP"
+        description="Perfil Profissiográfico Previdenciário (INSS / SAFE)"
+        className="ppp-page-header"
+      />
 
-        <Stepper
-          activeStep={activeStep}
-          onStepClick={goToStep}
-          className="ppp-stepper flex flex-nowrap items-start justify-center gap-2 pb-8 border-b border-border mx-auto"
-        >
-          {PPP_STEPS.map((item) => (
-            <StepperItem
-              key={item.step}
-              step={item.step}
-              className="ppp-stepper-item relative flex flex-1 min-w-0 flex-col items-center justify-center"
-            >
-              <StepperTrigger step={item.step}>
-                <StepIndicatorWithBadge step={item.step} icon={item.icon} />
-              </StepperTrigger>
-              {item.step !== PPP_STEPS[PPP_STEPS.length - 1]?.step && (
-                <StepperSeparator
-                  className="absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary"
-                />
-              )}
-              <div className="flex flex-col items-center gap-0.5 pt-1 w-full min-w-0">
-                <StepperTitle>{item.title}</StepperTitle>
-                <StepperDescription>{item.description}</StepperDescription>
-              </div>
-            </StepperItem>
-          ))}
-        </Stepper>
+      <div className="ppp-step-indicator">
+        <span className="ppp-step-label">
+          Passo {activeStep} de {PPP_STEPS.length}
+        </span>
+        <span className="ppp-step-title">{PPP_STEPS[activeStep - 1].title}</span>
+        <div className="ppp-step-bar" role="progressbar" aria-valuenow={activeStep} aria-valuemin={1} aria-valuemax={PPP_STEPS.length}>
+          <div className="ppp-step-bar-fill" style={{ width: `${(activeStep / PPP_STEPS.length) * 100}%` }} />
+        </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="ppp-form space-y-6 mt-8">
-        <div className="ppp-form__step min-h-[320px]">
+      <form onSubmit={handleSubmit} className="ppp-form w-full space-y-6 mt-6">
+        <div className="ppp-form__step min-h-[320px] w-full">
           {activeStep === 1 && (
             <Card className="ppp-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">1. Informações da empresa</CardTitle>
-            <CardDescription>Dados cadastrais da empresa</CardDescription>
+            <CardTitle className="text-base font-semibold">1. Informações da empresa</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Dados cadastrais da empresa</CardDescription>
           </CardHeader>
           <CardContent>
             <FieldGroup className="gap-4">
-              <Field>
-                <FieldLabel>Razão social</FieldLabel>
-                <Input
-                  value={razaoSocial}
-                  onChange={(e) => setRazaoSocial(e.target.value)}
-                  placeholder="Razão social"
-                />
-              </Field>
-              <Field>
-                <FieldLabel>CNPJ</FieldLabel>
-                <Input
-                  value={cnpj}
-                  onChange={(e) => setCnpj(e.target.value)}
-                  placeholder="00.000.000/0000-00"
-                />
-              </Field>
-              <Field>
-                <FieldLabel>CEI / CAEPF / CNO</FieldLabel>
-                <Input
-                  value={ceiCaepfCno}
-                  onChange={(e) => setCeiCaepfCno(e.target.value)}
-                  placeholder="CEI, CAEPF ou CNO"
-                />
-              </Field>
-              <Field>
-                <FieldLabel>CNAE</FieldLabel>
-                <Input
-                  value={cnae}
-                  onChange={(e) => setCnae(e.target.value)}
-                  placeholder="Código CNAE"
-                />
-              </Field>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field>
+                  <FieldLabel>Razão social</FieldLabel>
+                  <Input
+                    value={userEmpresaRazaoSocial ?? razaoSocial}
+                    onChange={(e) => setRazaoSocial(e.target.value)}
+                    placeholder="Razão social"
+                    readOnly={!!userEmpresaRazaoSocial}
+                    className={userEmpresaRazaoSocial ? 'bg-muted/50' : ''}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>CNPJ</FieldLabel>
+                  <Input
+                    value={userEmpresaCnpj ?? cnpj}
+                    onChange={(e) => setCnpj(e.target.value)}
+                    placeholder="00.000.000/0000-00"
+                    readOnly={!!userEmpresaCnpj}
+                    className={userEmpresaCnpj ? 'bg-muted/50' : ''}
+                  />
+                </Field>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field>
+                  <FieldLabel>CEI / CAEPF / CNO</FieldLabel>
+                  <Input
+                    value={ceiCaepfCno}
+                    onChange={(e) => setCeiCaepfCno(e.target.value)}
+                    placeholder="CEI, CAEPF ou CNO"
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>CNAE</FieldLabel>
+                  <Input
+                    value={cnae}
+                    onChange={(e) => setCnae(e.target.value)}
+                    placeholder="Código CNAE"
+                  />
+                </Field>
+              </div>
             </FieldGroup>
           </CardContent>
         </Card>
@@ -354,8 +304,8 @@ export default function SolicitacaoPpp() {
           {activeStep === 2 && (
             <Card className="ppp-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">2. Dados do trabalhador</CardTitle>
-            <CardDescription>Identificação e vínculo</CardDescription>
+            <CardTitle className="text-base font-semibold">2. Dados do trabalhador</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Identificação e vínculo</CardDescription>
           </CardHeader>
           <CardContent>
             <FieldGroup className="gap-4">
@@ -441,8 +391,8 @@ export default function SolicitacaoPpp() {
           {activeStep === 3 && (
             <Card className="ppp-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">3. Comunicação de acidente de trabalho</CardTitle>
-            <CardDescription>Preencher somente se houver CAT</CardDescription>
+            <CardTitle className="text-base font-semibold">3. Comunicação de acidente de trabalho</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Preencher somente se houver CAT</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-3">
@@ -482,8 +432,8 @@ export default function SolicitacaoPpp() {
           {activeStep === 4 && (
             <Card className="ppp-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">4. Histórico de trabalho do funcionário</CardTitle>
-            <CardDescription>Um período por bloco. Adicione quantos forem necessários.</CardDescription>
+            <CardTitle className="text-base font-semibold">4. Histórico de trabalho do funcionário</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Um período por bloco. Adicione quantos forem necessários.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -601,8 +551,8 @@ export default function SolicitacaoPpp() {
           {activeStep === 5 && (
             <Card className="ppp-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">5. Dados da avaliação ambiental</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-base font-semibold">5. Dados da avaliação ambiental</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">
               Obrigatório para períodos anteriores à gestão da SAFE
             </CardDescription>
           </CardHeader>
@@ -632,8 +582,8 @@ export default function SolicitacaoPpp() {
           {activeStep === 6 && (
             <Card className="ppp-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">6. EPIs fornecidos</CardTitle>
-            <CardDescription>Tipo de EPI e número do CA (Certificado de Aprovação)</CardDescription>
+            <CardTitle className="text-base font-semibold">6. EPIs fornecidos</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Tipo de EPI e número do CA (Certificado de Aprovação)</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -652,7 +602,6 @@ export default function SolicitacaoPpp() {
                         value={epi.tipoEpi}
                         onChange={(e) => updateEpi(epi.id, 'tipoEpi', e.target.value)}
                         placeholder="Ex.: Luvas, Óculos"
-                        className="h-8"
                       />
                     </TableCell>
                     <TableCell>
@@ -660,7 +609,6 @@ export default function SolicitacaoPpp() {
                         value={epi.numeroCa}
                         onChange={(e) => updateEpi(epi.id, 'numeroCa', e.target.value)}
                         placeholder="Nº CA"
-                        className="h-8"
                       />
                     </TableCell>
                     <TableCell>
@@ -691,8 +639,8 @@ export default function SolicitacaoPpp() {
           {activeStep === 7 && (
             <Card className="ppp-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">7. Perguntas obrigatórias sobre EPI</CardTitle>
-            <CardDescription>Responder Sim ou Não</CardDescription>
+            <CardTitle className="text-base font-semibold">7. Perguntas obrigatórias sobre EPI</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Responder Sim ou Não</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -727,8 +675,8 @@ export default function SolicitacaoPpp() {
           {activeStep === 8 && (
             <Card className="ppp-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">8. Responsável legal</CardTitle>
-            <CardDescription>Representante legal da empresa</CardDescription>
+            <CardTitle className="text-base font-semibold">8. Responsável legal</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Representante legal da empresa</CardDescription>
           </CardHeader>
           <CardContent>
             <FieldGroup className="gap-4">
@@ -766,8 +714,8 @@ export default function SolicitacaoPpp() {
           {activeStep === 9 && (
             <Card className="ppp-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg">9. Solicitação</CardTitle>
-            <CardDescription>Data e solicitante</CardDescription>
+            <CardTitle className="text-base font-semibold">9. Solicitação</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Data e solicitante</CardDescription>
           </CardHeader>
           <CardContent>
             <FieldGroup className="gap-4">
@@ -808,29 +756,28 @@ export default function SolicitacaoPpp() {
           </Card>
         )}
 
-        <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-border">
+        <div className="ppp-form-actions">
           <Button
             type="button"
             variant="outline"
             size="lg"
-            className="ppp-btn-outline w-full h-12 text-base"
+            className="w-full min-w-0"
             onClick={() => setActiveStep((s) => s - 1)}
             disabled={activeStep === 1}
           >
             Anterior
           </Button>
           {activeStep < 9 ? (
-            <Button type="button" size="lg" className="ppp-btn-primary w-full h-12 text-base" onClick={() => setActiveStep((s) => s + 1)}>
+            <Button type="button" variant="default" size="lg" className="w-full min-w-0" onClick={() => setActiveStep((s) => s + 1)}>
               Próximo
             </Button>
           ) : (
-            <Button type="submit" size="lg" className="ppp-btn-primary w-full h-12 text-base">
-              Enviar solicitação de PPP
+            <Button type="submit" variant="default" size="lg" className="w-full min-w-0" disabled={submitting}>
+              {submitting ? 'Enviando...' : 'Enviar solicitação de PPP'}
             </Button>
           )}
         </div>
         </form>
-      </div>
-    </div>
+    </PageContent>
   );
 }

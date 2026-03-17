@@ -3,11 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { LoginForm } from '@/components/login-form';
 
-const COLORS = {
-  darkBg: '#0087A6',
-  teal: '#00ACD4',
-};
-
 export default function Login() {
   const { login, isLoading, error, clearError, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -44,10 +39,7 @@ export default function Login() {
       </div>
 
       {/* Coluna direita: formulário */}
-      <div
-        className="flex flex-1 flex-col items-center justify-center p-6 md:p-10"
-        style={{ backgroundColor: COLORS.darkBg }}
-      >
+      <div className="flex flex-1 flex-col items-center justify-center bg-primary p-6 md:p-10">
         <div className="w-full max-w-sm">
           <LoginForm
             onSubmit={handleSubmit}

@@ -1,9 +1,24 @@
 import { useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Upload, X, FileText } from 'lucide-react';
+import { Upload, X, FileText, ExternalLink } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader';
+import { PageContent } from '@/components/PageContent';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import './Manuais.css';
 
-type ArquivoEnviado = { id: string; name: string; size: number };
+const IS_DEV = import.meta.env.DEV;
+
+type ArquivoEnviado = { id: string; name: string; size: number; url?: string; mock?: boolean };
+
+/** Arquivos de exemplo para visualização em desenvolvimento */
+const MOCK_ARQUIVOS: ArquivoEnviado[] = [
+  { id: 'mock-1', name: 'Manual de Segurança do Trabalho.pdf', size: 1024 * 450, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', mock: true },
+  { id: 'mock-2', name: 'Procedimento Operacional Padrão - EPI.pdf', size: 1024 * 280, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', mock: true },
+  { id: 'mock-3', name: 'NR-12 - Segurança em Máquinas e Equipamentos.pdf', size: 1024 * 1200, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', mock: true },
+  { id: 'mock-4', name: 'Checklist de Inspeção Mensal.docx', size: 1024 * 85, mock: true },
+  { id: 'mock-5', name: 'Ficha de EPI - Entrega e Devolução.xlsx', size: 1024 * 42, mock: true },
+];
 
 export default function Manuais() {
   const location = useLocation();
@@ -63,18 +78,18 @@ export default function Manuais() {
   }
 
   return (
-    <div className="manuais-page">
-      <div className="manuais-main">
-        <h1 className="manuais-titulo">Manuais e Procedimentos</h1>
-        <p className="manuais-subtitulo">
-          {isAdicionar ? 'Envie novos arquivos' : 'Arquivos enviados'}
-        </p>
+    <PageContent>
+      <PageHeader
+        title="Manuais e Procedimentos"
+        description={isAdicionar ? 'Envie novos arquivos' : 'Arquivos enviados'}
+      />
 
-        {isAdicionar ? (
-          <section className="manuais-adicionar">
-            <form onSubmit={handleSubmit} className="manuais-form">
+      {isAdicionar ? (
+          <Card>
+            <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div
-                className={`manuais-dropzone ${isDragging ? 'manuais-dropzone--active' : ''}`}
+                className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-10 transition-colors ${isDragging ? 'border-primary bg-primary/10' : 'border-input bg-muted/30 hover:bg-muted/50'}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -88,67 +103,91 @@ export default function Manuais() {
                   onChange={handleSelectFiles}
                   className="manuais-input-hidden"
                 />
-                <Upload className="manuais-dropzone-icon" size={40} />
-                <p className="manuais-dropzone-text">
+                <Upload className="size-10 shrink-0 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">
                   Arraste arquivos aqui ou clique para selecionar
                 </p>
               </div>
 
               {files.length > 0 && (
-                <div className="manuais-list">
-                  <h3 className="manuais-list-titulo">Arquivos selecionados ({files.length})</h3>
-                  <ul className="manuais-list-ul">
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium text-foreground">Arquivos selecionados ({files.length})</h3>
+                  <ul className="space-y-2">
                     {files.map((file, index) => (
-                      <li key={`${file.name}-${index}`} className="manuais-list-item">
-                        <FileText size={18} className="manuais-list-icon" />
-                        <span className="manuais-list-nome">{file.name}</span>
-                        <span className="manuais-list-tamanho">{formatSize(file.size)}</span>
-                        <button
+                      <li key={`${file.name}-${index}`} className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2 text-sm">
+                        <FileText className="size-5 shrink-0 text-muted-foreground" />
+                        <span className="min-w-0 flex-1 truncate text-foreground">{file.name}</span>
+                        <span className="shrink-0 text-muted-foreground">{formatSize(file.size)}</span>
+                        <Button
                           type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="size-8 shrink-0 text-muted-foreground hover:text-destructive"
                           onClick={(e) => {
                             e.stopPropagation();
                             removeFile(index);
                           }}
-                          className="manuais-list-remove"
                           aria-label="Remover arquivo"
                         >
-                          <X size={18} />
-                        </button>
+                          <X className="size-4" />
+                        </Button>
                       </li>
                     ))}
                   </ul>
-                  <button
-                    type="submit"
-                    disabled={isUploading}
-                    className="manuais-submit"
-                  >
+                  <Button type="submit" disabled={isUploading}>
                     {isUploading ? 'Enviando...' : 'Enviar arquivos'}
-                  </button>
+                  </Button>
                 </div>
               )}
             </form>
-          </section>
+            </CardContent>
+          </Card>
         ) : (
-          <section className="manuais-submenu">
-            <h2 className="manuais-submenu-titulo">Todos os arquivos</h2>
-            {uploadedFiles.length === 0 ? (
-              <p className="manuais-empty">
-                Nenhum arquivo enviado. Use &quot;Adicionar&quot; no menu para enviar.
-              </p>
-            ) : (
-              <ul className="manuais-arquivos-list">
-                {uploadedFiles.map((arq) => (
-                  <li key={arq.id} className="manuais-arquivos-item">
-                    <FileText size={18} className="manuais-arquivos-icon" />
-                    <span className="manuais-arquivos-nome">{arq.name}</span>
-                    <span className="manuais-arquivos-tamanho">{formatSize(arq.size)}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
+          <Card>
+            <CardContent className="pt-6">
+              <h2 className="mb-4 text-base font-semibold text-foreground">Arquivos</h2>
+              {(uploadedFiles.length === 0 && !IS_DEV) ? (
+                <p className="text-sm text-muted-foreground">
+                  Nenhum arquivo enviado. Use &quot;Adicionar&quot; no menu para enviar.
+                </p>
+              ) : (
+                <>
+                  {IS_DEV && uploadedFiles.length === 0 && (
+                    <p className="mb-3 text-xs text-muted-foreground">
+                      Dados de exemplo. Envie arquivos reais em &quot;Adicionar&quot; para ver seus documentos.
+                    </p>
+                  )}
+                  <ul className="space-y-2">
+                    {(uploadedFiles.length > 0 ? uploadedFiles : MOCK_ARQUIVOS).map((arq) => {
+                      const isClickable = !!(arq.url || arq.mock);
+                      const handleClick = () => {
+                        if (arq.url) window.open(arq.url, '_blank', 'noopener,noreferrer');
+                        else if (arq.mock) window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', '_blank', 'noopener,noreferrer');
+                      };
+                      return (
+                        <li
+                          key={arq.id}
+                          className={`flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-3 py-2 text-sm ${isClickable ? 'cursor-pointer hover:bg-muted/60 transition-colors' : ''}`}
+                          role={isClickable ? 'button' : undefined}
+                          onClick={isClickable ? handleClick : undefined}
+                          onKeyDown={isClickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } } : undefined}
+                          tabIndex={isClickable ? 0 : undefined}
+                        >
+                          <FileText className="size-5 shrink-0 text-muted-foreground" />
+                          <span className="min-w-0 flex-1 truncate text-foreground">{arq.name}</span>
+                          <span className="shrink-0 text-muted-foreground">{formatSize(arq.size)}</span>
+                          {isClickable && (
+                            <ExternalLink className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
+            </CardContent>
+          </Card>
         )}
-      </div>
-    </div>
+    </PageContent>
   );
 }

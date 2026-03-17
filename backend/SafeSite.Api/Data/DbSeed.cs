@@ -1,43 +1,50 @@
 using Microsoft.EntityFrameworkCore;
 using SafeSite.Api.Models;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace SafeSite.Api.Data;
 
+/// <summary>
+/// Seed alternativo (empresa + usuários). O Program.cs usa Seed.RunAsync; este arquivo fica apenas para compatibilidade.
+/// </summary>
 public static class DbSeed
 {
-    public static async Task SeedAsync(AppDbContext db)
+    public static async Task SeedAsync(AppDbContext db, CancellationToken ct = default)
     {
-        if (await db.Usuarios.AnyAsync())
+        if (await db.Usuarios.AnyAsync(ct))
             return;
 
-        // Senha "admin" e "123" em hash simples (apenas para desenvolvimento; em produção use BCrypt/Identity)
-        var usuarios = new List<Usuario>
+        var empresa = new Empresa
         {
-            new() { UserName = "admin", PasswordHash = "admin", Role = "admin" },
-            new() { UserName = "cliente1", PasswordHash = "123", Role = "client", Empresa = "Empresa Alpha" },
-            new() { UserName = "cliente2", PasswordHash = "123", Role = "client", Empresa = "Empresa Beta" }
+            Id = Guid.NewGuid().ToString(),
+            RazaoSocial = "Empresa Alpha Ltda",
+            NomeFantasia = "Empresa Alpha",
+            Cnpj = "00000000000191",
+            Endereco = "Rua Exemplo, 100",
+            Telefone = "(11) 3000-0000"
         };
-        await db.Usuarios.AddRangeAsync(usuarios);
+        db.Empresas.Add(empresa);
 
-        var tipos = new[]
-        {
-            "Manuais e Procedimentos", "Solicitação de PPP", "Abertura de CAT", "Inclusão de Cargo",
-            "Inclusão de Setor | GHE", "Inclusão de Nova Unidade", "Solicitação de Visita Técnica", "Abertura de Chamado"
-        };
-        var solicitacoes = new List<Solicitacao>();
-        var rand = new Random(42);
-        for (int i = 0; i < 12; i++)
-        {
-            solicitacoes.Add(new Solicitacao
-            {
-                Empresa = new[] { "Empresa Alpha", "Empresa Beta", "Empresa Gamma" }[rand.Next(3)],
-                Tipo = tipos[rand.Next(tipos.Length)],
-                DataCriacao = DateTime.UtcNow.AddDays(-rand.Next(1, 10)),
-                Status = new[] { "Pendente", "Em análise", "Concluído" }[rand.Next(3)]
-            });
-        }
-        await db.Solicitacoes.AddRangeAsync(solicitacoes);
+        var hash = BCryptNet.HashPassword("admin123", 12);
 
-        await db.SaveChangesAsync();
+        db.Usuarios.Add(new Usuario
+        {
+            Id = Guid.NewGuid().ToString(),
+            Email = "admin@safesite.com",
+            PasswordHash = hash,
+            Role = "admin",
+            EmpresaId = null
+        });
+
+        db.Usuarios.Add(new Usuario
+        {
+            Id = Guid.NewGuid().ToString(),
+            Email = "cliente@empresaalpha.com",
+            PasswordHash = hash,
+            Role = "client",
+            EmpresaId = empresa.Id
+        });
+
+        await db.SaveChangesAsync(ct);
     }
 }

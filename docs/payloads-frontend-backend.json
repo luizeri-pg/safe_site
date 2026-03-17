@@ -1,0 +1,357 @@
+{
+  "geradoEm": "2026-03-16",
+  "origem": "mapeamento de telas do front para contratos do backend C#",
+  "telas": [
+    {
+      "tela": "Login",
+      "rotaFront": "/login",
+      "backend": {
+        "metodo": "POST",
+        "endpoint": "/auth/login"
+      },
+      "jsonEsperado": {
+        "username": "usuario@empresa.com",
+        "password": "senha123"
+      }
+    },
+    {
+      "tela": "Abertura de Chamado - Gera chamado",
+      "rotaFront": "/abertura-chamado/gera-chamado",
+      "backend": {
+        "metodo": "POST",
+        "endpoint": "/api/chamados"
+      },
+      "jsonEsperado": {
+        "empresa": {
+          "cnpj": "00.000.000/0001-00",
+          "razaoSocial": "Empresa Exemplo LTDA"
+        },
+        "chamado": {
+          "titulo": "Falha no equipamento X",
+          "descricao": "Descricao detalhada do problema",
+          "prioridade": "Alta",
+          "categoria": "Tecnico"
+        },
+        "solicitante": {
+          "nome": "Maria Silva",
+          "email": "maria@empresa.com",
+          "telefone": "(11) 99999-9999"
+        }
+      }
+    },
+    {
+      "tela": "Abertura de Chamado - Painel",
+      "rotaFront": "/abertura-chamado/painel",
+      "backend": {
+        "metodo": "GET",
+        "endpoint": "/api/chamados"
+      },
+      "jsonEsperado": null
+    },
+    {
+      "tela": "Abertura de CAT",
+      "rotaFront": "/abertura-cat/adicionar",
+      "backend": {
+        "metodo": "POST",
+        "endpoint": "/api/cats"
+      },
+      "jsonEsperado": {
+        "payload": {
+          "empregador": {
+            "razaoSocial": "Empresa Exemplo LTDA",
+            "cnpj": "00.000.000/0001-00",
+            "endereco": "Rua Exemplo, 100",
+            "telefone": "(11) 99999-9999"
+          },
+          "trabalhador": {
+            "nome": "Joao Souza",
+            "dataNascimento": "1990-01-01",
+            "cpf": "000.000.000-00",
+            "sexo": "M",
+            "estadoCivil": "solteiro",
+            "filiacaoInss": "1234567890",
+            "funcao": "Operador",
+            "cbo": "1234-56",
+            "matriculaEsocial": "MAT-001",
+            "endereco": "Rua Y, 200",
+            "telefone": "(11) 98888-7777",
+            "email": "joao@empresa.com"
+          },
+          "atividadeMomento": "Operava equipamento",
+          "descricaoOcorrencia": "Descricao do ocorrido",
+          "localIncidente": {
+            "local": "Setor de producao",
+            "cnpj": "00.000.000/0001-00",
+            "endereco": "Rua Z, 300",
+            "municipio": "Sao Paulo",
+            "uf": "SP"
+          },
+          "dadosAcidente": {
+            "ultimoDiaTrabalhado": "2026-03-15",
+            "horarioSaida": "17:30",
+            "dataOcorrencia": "2026-03-15",
+            "inicioJornada": "08:00",
+            "ultimaPausa": "12:00",
+            "horaIncidente": "14:40",
+            "tipoIncidente": "pessoal",
+            "boletimOcorrencia": null
+          },
+          "lesao": {
+            "partesCorpo": {
+              "Mao direita": true
+            },
+            "outrosParteCorpo": "",
+            "agenteCausador": "Maquina",
+            "situacaoCausadora": "Impacto"
+          },
+          "epc": {
+            "epcSinalizacao": true,
+            "epcLinhaVida": false,
+            "epcBloqueioEnergia": true,
+            "epcOutros": ""
+          },
+          "episUtilizados": {
+            "Luvas": true,
+            "Capacete": true
+          },
+          "seguranca": {
+            "existeAnaliseRisco": "sim",
+            "existePermissaoTrabalho": "sim",
+            "atividadeEmDupla": "nao",
+            "ferramentasUtilizadas": "Chave e alicate",
+            "ferramentasBoasCondicoes": "sim",
+            "ferramentasAdequadas": "sim",
+            "numeroOsOm": "OS-100",
+            "setorOcorrencia": "Producao"
+          },
+          "atendimentoMedico": {
+            "nomeUnidadeAtendimento": "Hospital Exemplo",
+            "enderecoUnidade": "Av. Saude, 100",
+            "horarioAtendimento": "15:20",
+            "nomeMedico": "Dra. Ana",
+            "crmMedico": "CRM-SP-12345",
+            "cid10": "S00.0"
+          },
+          "responsavel": {
+            "nomeResponsavel": "Carlos Lima",
+            "funcaoResponsavel": "Supervisor",
+            "dataPreenchimento": "2026-03-16",
+            "assinaturaResponsavel": "Carlos Lima"
+          }
+        }
+      }
+    },
+    {
+      "tela": "Inclusao de Cargo",
+      "rotaFront": "/inclusao-cargo/adicionar",
+      "backend": {
+        "metodo": "POST",
+        "endpoint": "/api/cargos"
+      },
+      "jsonEsperado": {
+        "empresa": {
+          "cnpj": "00.000.000/0001-00",
+          "razaoSocial": "Empresa Exemplo LTDA"
+        },
+        "cargo": {
+          "nomeCargo": "Tecnico de Seguranca",
+          "cbo": "3516-05",
+          "setor": "SSMA",
+          "descricaoAtividades": "Acompanhar rotinas de seguranca",
+          "grauRisco": "2"
+        },
+        "solicitacao": {
+          "dataSolicitacao": "2026-03-16",
+          "nomeSolicitante": "Maria Silva"
+        }
+      }
+    },
+    {
+      "tela": "Inclusao de Setor | GHE",
+      "rotaFront": "/inclusao-setor-ghe/adicionar",
+      "backend": {
+        "metodo": "POST",
+        "endpoint": "/api/setores-ghe"
+      },
+      "jsonEsperado": {
+        "empresa": {
+          "cnpj": "00.000.000/0001-00",
+          "razaoSocial": "Empresa Exemplo LTDA"
+        },
+        "setorGhe": {
+          "nomeSetor": "Producao",
+          "codigoSetor": "SET-01",
+          "codigoGhe": "GHE-10",
+          "descricaoSetor": "Setor de fabricacao"
+        },
+        "solicitacao": {
+          "dataSolicitacao": "2026-03-16",
+          "nomeSolicitante": "Maria Silva"
+        }
+      }
+    },
+    {
+      "tela": "Inclusao de Nova Unidade",
+      "rotaFront": "/inclusao-nova-unidade/adicionar",
+      "backend": {
+        "metodo": "POST",
+        "endpoint": "/api/unidades"
+      },
+      "jsonEsperado": {
+        "empresa": {
+          "cnpj": "00.000.000/0001-00",
+          "razaoSocial": "Empresa Exemplo LTDA"
+        },
+        "unidade": {
+          "nomeUnidade": "Filial Campinas",
+          "cnpjUnidade": "11.111.111/0001-11",
+          "enderecoUnidade": "Rua Nova, 500",
+          "municipio": "Campinas",
+          "uf": "SP",
+          "telefoneUnidade": "(19) 3000-4000"
+        },
+        "solicitacao": {
+          "dataSolicitacao": "2026-03-16",
+          "nomeSolicitante": "Maria Silva"
+        }
+      }
+    },
+    {
+      "tela": "Solicitacao de Visita Tecnica",
+      "rotaFront": "/solicitacao-visita-tecnica/adicionar",
+      "backend": {
+        "metodo": "POST",
+        "endpoint": "/api/visitas"
+      },
+      "jsonEsperado": {
+        "empresa": {
+          "cnpj": "00.000.000/0001-00",
+          "razaoSocial": "Empresa Exemplo LTDA"
+        },
+        "visita": {
+          "objetivoVisita": "Avaliacao de riscos",
+          "dataPreferencial": "2026-03-25",
+          "enderecoVisita": "Rua da Fabrica, 800",
+          "municipio": "Sao Paulo",
+          "uf": "SP",
+          "descricaoNecessidade": "Avaliar condicoes do setor de manutencao",
+          "tipoVisita": "Vistoria"
+        },
+        "solicitacao": {
+          "dataSolicitacao": "2026-03-16",
+          "nomeSolicitante": "Maria Silva",
+          "emailSolicitante": "maria@empresa.com",
+          "telefoneSolicitante": "(11) 99999-9999"
+        }
+      }
+    },
+    {
+      "tela": "Solicitacao de PPP",
+      "rotaFront": "/solicitacao-ppp/adicionar",
+      "backend": {
+        "metodo": "POST",
+        "endpoint": "/api/ppp"
+      },
+      "jsonEsperado": {
+        "payload": {
+          "empresa": {
+            "razaoSocial": "Empresa Exemplo LTDA",
+            "cnpj": "00.000.000/0001-00",
+            "ceiCaepfCno": "123456",
+            "cnae": "6201-5/01"
+          },
+          "trabalhador": {
+            "nomeCompleto": "Joao Souza",
+            "cpf": "000.000.000-00",
+            "dataNascimento": "1990-01-01",
+            "sexo": "M",
+            "matriculaEsocial": "MAT-001",
+            "dataAdmissao": "2020-02-10",
+            "regimeRevezamento": "12x36",
+            "brOuPdh": "nenhum"
+          },
+          "cat": null,
+          "historicos": [
+            {
+              "periodoInicio": "2020-02-10",
+              "periodoFim": "2026-03-16",
+              "setor": "Producao",
+              "cargo": "Operador",
+              "funcao": "Operador de maquina",
+              "cbo": "1234-56",
+              "descricaoAtividades": "Operacao de equipamento",
+              "codigoGfip": "123",
+              "localLotacao": "Matriz"
+            }
+          ],
+          "avaliacaoAmbiental": {
+            "nomeResponsavelAmbiental": "Eng. Pedro",
+            "cpfResponsavelAmbiental": "111.111.111-11"
+          },
+          "epis": [
+            {
+              "tipoEpi": "Luvas",
+              "numeroCa": "12345"
+            }
+          ],
+          "perguntasEpi": {
+            "protecaoColetivaAntes": "sim",
+            "usoContinuo": "sim",
+            "respeitouValidadeCa": "sim",
+            "trocaPeriodica": "sim",
+            "higienizacao": "sim"
+          },
+          "responsavelLegal": {
+            "nomeRepresentanteLegal": "Carlos Lima",
+            "cargoRepresentanteLegal": "Diretor",
+            "cpfRepresentanteLegal": "222.222.222-22"
+          },
+          "solicitacao": {
+            "dataSolicitacao": "2026-03-16",
+            "nomeSolicitante": "Maria Silva"
+          }
+        }
+      }
+    },
+    {
+      "tela": "Manuais e Procedimentos - Adicionar",
+      "rotaFront": "/manuais-e-procedimentos/adicionar",
+      "backend": {
+        "metodo": null,
+        "endpoint": null
+      },
+      "jsonEsperado": null
+    },
+    {
+      "tela": "Acompanhamento - Atualizar status",
+      "rotaFront": "/acompanhamento",
+      "backend": {
+        "metodo": "PATCH",
+        "endpoint": "/api/solicitacoes/{id}"
+      },
+      "jsonEsperado": {
+        "status": "Em analise"
+      }
+    },
+    {
+      "tela": "Acompanhamento - Atualizar descricao",
+      "rotaFront": "/acompanhamento",
+      "backend": {
+        "metodo": "PATCH",
+        "endpoint": "/api/solicitacoes/{id}"
+      },
+      "jsonEsperado": {
+        "descricao": "Detalhes da atualizacao"
+      }
+    },
+    {
+      "tela": "Dashboard",
+      "rotaFront": "/",
+      "backend": {
+        "metodo": null,
+        "endpoint": null
+      },
+      "jsonEsperado": null
+    }
+  ]
+}

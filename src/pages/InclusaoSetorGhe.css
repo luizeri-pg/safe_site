@@ -1,0 +1,137 @@
+/* Inclusão de Setor | GHE – mesmo padrão visual (Cargo / CAT) */
+
+.setor-form-page {
+  max-width: 1280px;
+}
+
+.setor-card[data-slot="card"] {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.dark .setor-card[data-slot="card"] {
+  border-color: #475569 !important;
+}
+
+.setor-form-page .setor-page-header {
+  margin-bottom: 1.5rem;
+}
+.setor-form-page .setor-page-header h1 {
+  font-size: 1.625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: hsl(var(--foreground));
+}
+.setor-form-page .setor-page-header p {
+  margin-top: 0.375rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: hsl(var(--muted-foreground));
+  max-width: 42rem;
+}
+
+.setor-form-page .setor-card,
+.setor-form-page [data-slot="card"].setor-card {
+  width: 100%;
+  background: hsl(var(--card)) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.dark .setor-form-page .setor-card,
+.dark .setor-form-page [data-slot="card"].setor-card {
+  border-color: #475569 !important;
+}
+.setor-form-page .setor-card [data-slot="card-header"],
+.setor-form-page [data-slot="card"].setor-card [data-slot="card-header"] {
+  padding: 1.25rem 1.5rem;
+  border-bottom: none;
+  background: hsl(var(--muted) / 0.35);
+}
+.setor-form-page .setor-card [data-slot="card-header"] [data-slot="card-title"],
+.setor-form-page [data-slot="card"].setor-card [data-slot="card-header"] [data-slot="card-title"] {
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.setor-form-page .setor-card [data-slot="card-header"] [data-slot="card-description"],
+.setor-form-page [data-slot="card"].setor-card [data-slot="card-header"] [data-slot="card-description"] {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: hsl(var(--muted-foreground));
+}
+.setor-form-page .setor-card [data-slot="card-content"],
+.setor-form-page [data-slot="card"].setor-card [data-slot="card-content"] {
+  padding: 1.5rem;
+}
+
+.setor-form__step {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 360px;
+}
+
+.setor-step-indicator {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+  padding: 0.75rem 0 1rem;
+}
+.setor-step-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.25rem;
+}
+.setor-step-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.75rem;
+}
+.setor-step-bar {
+  height: 6px;
+  background: hsl(var(--muted));
+  border-radius: 3px;
+  overflow: hidden;
+}
+.setor-step-bar-fill {
+  height: 100%;
+  background: hsl(var(--primary));
+  border-radius: 3px;
+  transition: width 0.25s ease;
+}
+
+.setor-form {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+.setor-form-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid hsl(var(--border));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.setor-form-actions button {
+  min-height: 2.75rem;
+  font-weight: 500;
+  border-radius: var(--radius-lg);
+}
+.setor-form-actions button[type="submit"] {
+  box-shadow: 0 1px 3px hsl(var(--primary) / 0.3);
+}

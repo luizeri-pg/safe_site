@@ -15,7 +15,7 @@ function fakeAccessToken(): string {
   return `${header}.${payload}.${signature}`;
 }
 
-/** Resposta mock do POST /auth/login. role admin = acesso ao painel de acompanhamento. */
+/** Resposta mock do POST /auth/login. role admin = acesso ao painel de acompanhamento. client = vinculado a uma empresa. */
 function mockLoginResponse(isAdmin: boolean) {
   return {
     sucesso: true,
@@ -27,6 +27,13 @@ function mockLoginResponse(isAdmin: boolean) {
       access_token: fakeAccessToken(),
       token_type: 'Bearer',
       role: isAdmin ? 'admin' : 'client',
+      // Em dev: cliente vinculado à Empresa Alpha para ver chamados e formulários travados
+      ...(isAdmin ? {} : {
+        empresa_id: '1',
+        empresa_nome: 'Empresa Alpha',
+        empresa_razao_social: 'Empresa Alpha Ltda',
+        empresa_cnpj: '00.000.000/0001-00',
+      }),
     },
   };
 }

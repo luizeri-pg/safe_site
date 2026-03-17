@@ -16,7 +16,7 @@ export interface AreaLink {
   external?: boolean;
   /** Se definido, o item na sidebar tem seta e submenu. */
   basePath?: string;
-  /** Itens do submenu. Se não informado, usa "Todos os arquivos" e "Adicionar". */
+  /** Itens do submenu. Se não informado, usa "Solicitações" e "Adicionar". */
   submenuItems?: SubmenuItem[];
 }
 
@@ -32,8 +32,12 @@ export const AREA_CLIENTE_LINKS: AreaLink[] = [
     id: 'manuais',
     label: 'Manuais e Procedimentos',
     subtitle: 'Envie e consulte arquivos',
-    href: '/manuais-e-procedimentos',
+    href: '/manuais-e-procedimentos/arquivos',
     basePath: '/manuais-e-procedimentos',
+    submenuItems: [
+      { path: 'arquivos', label: 'Arquivos' },
+      { path: 'adicionar', label: 'Adicionar' },
+    ],
     external: false,
   },
   {
@@ -50,6 +54,10 @@ export const AREA_CLIENTE_LINKS: AreaLink[] = [
     subtitle: 'Forms',
     href: '/abertura-cat/arquivos',
     basePath: '/abertura-cat',
+    submenuItems: [
+      { path: 'arquivos', label: 'Solicitações' },
+      { path: 'adicionar', label: 'Adicionar' },
+    ],
     external: false,
   },
   {
@@ -80,11 +88,11 @@ export const AREA_CLIENTE_LINKS: AreaLink[] = [
     id: 'chamado',
     label: 'Abertura de Chamado',
     subtitle: 'Gera chamado e painel de acompanhamento',
-    href: '/abertura-chamado/gera-chamado',
+    href: '/abertura-chamado/painel',
     basePath: '/abertura-chamado',
     submenuItems: [
-      { path: 'gera-chamado', label: 'Gera chamado' },
       { path: 'painel', label: 'Painel de acompanhamento' },
+      { path: 'gera-chamado', label: 'Gerar Chamado' },
     ],
     external: false,
   },

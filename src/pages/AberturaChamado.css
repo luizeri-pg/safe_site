@@ -1,0 +1,202 @@
+/* Abertura de Chamado – Gera chamado + Painel (mesmo padrão dos outros forms) */
+
+.chamado-form-page {
+  max-width: 1280px;
+}
+
+.chamado-form-page .chamado-page-header {
+  margin-bottom: 1.5rem;
+}
+.chamado-form-page .chamado-page-header h1 {
+  font-size: 1.625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: hsl(var(--foreground));
+}
+.chamado-form-page .chamado-page-header p {
+  margin-top: 0.375rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: hsl(var(--muted-foreground));
+  max-width: 42rem;
+}
+
+/* Cards do formulário */
+.chamado-form-page .chamado-card,
+.chamado-form-page [data-slot="card"].chamado-card {
+  width: 100%;
+  background: hsl(var(--card)) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.dark .chamado-form-page .chamado-card,
+.dark .chamado-form-page [data-slot="card"].chamado-card {
+  border-color: #475569 !important;
+}
+.chamado-form-page .chamado-card [data-slot="card-header"],
+.chamado-form-page [data-slot="card"].chamado-card [data-slot="card-header"] {
+  padding: 1.25rem 1.5rem;
+  border-bottom: none;
+  background: hsl(var(--muted) / 0.35);
+}
+.chamado-form-page .chamado-card [data-slot="card-header"] [data-slot="card-title"],
+.chamado-form-page [data-slot="card"].chamado-card [data-slot="card-header"] [data-slot="card-title"] {
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.chamado-form-page .chamado-card [data-slot="card-header"] [data-slot="card-description"],
+.chamado-form-page [data-slot="card"].chamado-card [data-slot="card-header"] [data-slot="card-description"] {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: hsl(var(--muted-foreground));
+}
+.chamado-form-page .chamado-card [data-slot="card-content"],
+.chamado-form-page [data-slot="card"].chamado-card [data-slot="card-content"] {
+  padding: 1.5rem;
+}
+
+.chamado-form__step {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 360px;
+}
+
+.chamado-step-indicator {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+  padding: 0.75rem 0 1rem;
+}
+.chamado-step-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.25rem;
+}
+.chamado-step-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.75rem;
+}
+.chamado-step-bar {
+  height: 6px;
+  background: hsl(var(--muted));
+  border-radius: 3px;
+  overflow: hidden;
+}
+.chamado-step-bar-fill {
+  height: 100%;
+  background: hsl(var(--primary));
+  border-radius: 3px;
+  transition: width 0.25s ease;
+}
+
+.chamado-form {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+.chamado-form-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid hsl(var(--border));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.chamado-form-actions button {
+  min-height: 2.75rem;
+  font-weight: 500;
+  border-radius: var(--radius-lg);
+}
+.chamado-form-actions button[type="submit"] {
+  box-shadow: 0 1px 3px hsl(var(--primary) / 0.3);
+}
+
+/* Painel de acompanhamento */
+.chamado-painel-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.chamado-painel-busca {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  background: hsl(var(--card));
+}
+.chamado-painel-selects {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.chamado-painel-card {
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+.dark .chamado-painel-card {
+  border-color: #475569;
+}
+.chamado-prioridade {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-md);
+}
+.chamado-prioridade--alta {
+  background: hsl(var(--destructive) / 0.15);
+  color: hsl(var(--destructive));
+}
+.chamado-prioridade--média {
+  background: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+}
+.chamado-prioridade--baixa {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+.chamado-status {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-md);
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+.chamado-status--aberto {
+  background: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+}
+
+.chamado-painel-aviso {
+  border-color: hsl(var(--primary) / 0.4);
+  background: hsl(var(--primary) / 0.06);
+}

@@ -1,285 +1,148 @@
-/* Solicitação de PPP – centralizado, tipografia e cores padronizadas (teal #00ACD4) */
+/* Solicitação de PPP – mesmo padrão de design dos outros formulários (CAT, Inclusão de Cargo, etc.) */
 
-.ppp-page {
-  --ppp-primary: #00ACD4;
-  --ppp-primary-hover: #0087A6;
-  --ppp-primary-muted: rgba(0, 172, 212, 0.2);
-  --ppp-border: rgba(255, 255, 255, 0.18);
-  --ppp-border-strong: rgba(255, 255, 255, 0.28);
-  max-width: 100%;
-  color: #f1f5f9;
-  font-family: var(--font-sans, 'Geist Variable', system-ui, sans-serif);
-  font-size: 1rem;
-  line-height: 1.5;
+.ppp-form-page {
+  max-width: 1280px;
 }
 
-/* Container centralizado – largo o suficiente para os 9 steps */
-.ppp-page__inner {
-  width: 100%;
-  max-width: 85rem;
-  margin-left: auto;
-  margin-right: auto;
-  overflow-x: visible;
+/* Header da página */
+.ppp-form-page .ppp-page-header {
+  margin-bottom: 1.5rem;
 }
-
-/* Cabeçalho da página */
-.ppp-page__header {
-  margin-bottom: 2rem;
-}
-
-.ppp-page__title {
-  font-family: inherit;
-  font-size: 1.5rem;
+.ppp-form-page .ppp-page-header h1 {
+  font-size: 1.625rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  line-height: 1.3;
-  color: #f1f5f9 !important;
-  margin: 0 0 0.25rem;
+  color: hsl(var(--foreground));
 }
-
-.ppp-page__subtitle {
-  font-family: inherit;
+.ppp-form-page .ppp-page-header p {
+  margin-top: 0.375rem;
   font-size: 0.9375rem;
-  font-weight: 400;
-  color: #cbd5e1 !important;
-  margin: 0;
+  line-height: 1.5;
+  color: hsl(var(--muted-foreground));
+  max-width: 42rem;
 }
 
-.ppp-page .text-muted-foreground {
-  color: #cbd5e1 !important;
+/* Cards: borda clara, sem linha horizontal entre título e dados */
+.ppp-form-page .ppp-card,
+.ppp-form-page [data-slot="card"].ppp-card {
+  width: 100%;
+  background: hsl(var(--card)) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.dark .ppp-form-page .ppp-card,
+.dark .ppp-form-page [data-slot="card"].ppp-card {
+  border-color: #475569 !important;
+}
+.ppp-form-page .ppp-card [data-slot="card-header"],
+.ppp-form-page [data-slot="card"].ppp-card [data-slot="card-header"] {
+  padding: 1.25rem 1.5rem;
+  border-bottom: none;
+  background: hsl(var(--muted) / 0.35);
+}
+.ppp-form-page .ppp-card [data-slot="card-header"] [data-slot="card-title"] {
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.ppp-form-page .ppp-card [data-slot="card-header"] [data-slot="card-description"] {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: hsl(var(--muted-foreground));
+}
+.ppp-form-page .ppp-card [data-slot="card-content"] {
+  padding: 1.5rem;
 }
 
-/* Títulos e descrições dos cards – padronizados */
-.ppp-page [data-slot="card-title"] {
-  font-family: inherit !important;
-  font-size: 1.0625rem !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.01em !important;
-  color: #f1f5f9 !important;
-}
-
-.ppp-page [data-slot="card-description"] {
-  font-family: inherit !important;
-  font-size: 0.875rem !important;
-  font-weight: 400 !important;
-  color: #cbd5e1 !important;
-}
-
-/* Labels e campos – padronizados */
-.ppp-page label,
-.ppp-page [data-slot="field-label"] {
-  font-family: inherit !important;
-  font-size: 0.875rem !important;
-  font-weight: 500 !important;
-  color: #e2e8f0 !important;
-}
-
-/* Inputs e select: texto, bordas e foco em teal */
-.ppp-page input,
-.ppp-page select,
-.ppp-page textarea {
-  font-family: inherit !important;
-  font-size: 0.875rem !important;
-  color: #f1f5f9 !important;
-  background-color: rgba(30, 41, 59, 0.7) !important;
-  border: 1px solid var(--ppp-border-strong) !important;
-  border-radius: 8px;
-}
-
-.ppp-page input:focus,
-.ppp-page select:focus,
-.ppp-page textarea:focus {
-  outline: none !important;
-  border-color: var(--ppp-primary) !important;
-  box-shadow: 0 0 0 2px var(--ppp-primary-muted) !important;
-}
-
-.ppp-page input::placeholder,
-.ppp-page textarea::placeholder {
-  color: #94a3b8 !important;
-}
-
-.ppp-page select option {
-  background: #1e293b;
-  color: #f1f5f9;
-}
-
-/* Cards: sem fundo, borda discreta */
-.ppp-page .ppp-card {
-  background: transparent !important;
-  border: 1px solid var(--ppp-border-strong) !important;
-  box-shadow: none;
-  --tw-ring-shadow: 0 0 #0000;
-  border-radius: 12px;
-}
-
-/* Tabela EPIs */
-.ppp-page [data-slot="table"] th,
-.ppp-page [data-slot="table"] td {
-  color: #e2e8f0;
-}
-
-/* Stepper – horizontal, centralizado, grid maior */
-.ppp-stepper,
-.ppp-page [data-slot="stepper"].ppp-stepper {
-  width: 100% !important;
+/* Indicador de passo: compacto, barra de progresso */
+.ppp-step-indicator {
   max-width: 80rem;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  background: transparent !important;
-  border-bottom-color: var(--ppp-border) !important;
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  align-items: flex-start !important;
-  justify-content: center !important;
-  gap: 0.75rem;
-  overflow-x: auto;
-  padding-bottom: 0.25rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+  padding: 0.75rem 0 1rem;
+}
+.ppp-step-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.25rem;
+}
+.ppp-step-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.75rem;
+}
+.ppp-step-bar {
+  height: 6px;
+  background: hsl(var(--muted));
+  border-radius: 3px;
+  overflow: hidden;
+}
+.ppp-step-bar-fill {
+  height: 100%;
+  background: hsl(var(--primary));
+  border-radius: 3px;
+  transition: width 0.25s ease;
 }
 
-/* Cada etapa: tamanho fixo para caberem os 9 steps sem cortar */
-.ppp-page .ppp-stepper-item {
-  flex: 0 0 auto !important;
-  width: 8rem !important;
-  min-width: 8rem !important;
-  max-width: 8rem !important;
-}
-
-.ppp-page [data-slot="stepper-item"],
-.ppp-page [data-slot="stepper-item"] > div:not([data-slot="stepper-separator"]),
-.ppp-page [data-slot="stepper-trigger"] {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-.ppp-page [data-slot="stepper-title"] {
-  font-family: inherit !important;
-  font-size: 0.8125rem !important;
-  font-weight: 500 !important;
-  color: #f1f5f9 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  text-align: center !important;
-  width: 100%;
-  line-height: 1.3;
-}
-
-.ppp-page [data-slot="stepper-item"][data-state="active"] [data-slot="stepper-title"] {
-  color: var(--ppp-primary) !important;
-}
-
-.ppp-page [data-slot="stepper-description"] {
-  font-family: inherit !important;
-  font-size: 0.6875rem !important;
-  font-weight: 400 !important;
-  color: #94a3b8 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  text-align: center !important;
-  width: 100%;
-  line-height: 1.3;
-  margin-top: 0.125rem;
-}
-
-.ppp-page [data-slot="stepper-item"][data-state="active"] [data-slot="stepper-description"] {
-  color: rgba(0, 172, 212, 0.9) !important;
-}
-
-.ppp-page [data-slot="stepper-indicator"] {
-  background: rgba(51, 65, 85, 0.9);
-  border: 2px solid var(--ppp-border-strong);
-  color: #cbd5e1;
-  transition: border-color 0.2s, background 0.2s, color 0.2s;
-}
-
-.ppp-page [data-slot="stepper-item"][data-state="active"] [data-slot="stepper-indicator"] {
-  background: var(--ppp-primary) !important;
-  border-color: var(--ppp-primary) !important;
-  color: #0C1222 !important;
-}
-
-.ppp-page [data-slot="stepper-item"][data-state="completed"] [data-slot="stepper-indicator"] {
-  background: var(--ppp-primary-muted) !important;
-  border-color: var(--ppp-primary) !important;
-  color: var(--ppp-primary) !important;
-}
-
-.ppp-page [data-slot="stepper-trigger"]:hover [data-slot="stepper-indicator"] {
-  border-color: var(--ppp-primary) !important;
-  color: var(--ppp-primary) !important;
-}
-
-/* Badge no canto do indicador (play = ativo, estrela = inativo) */
-.ppp-page .ppp-step-badge {
-  border-color: #0C1222 !important;
-}
-
-/* Linha pontilhada entre as etapas (estilo da referência) */
-.ppp-page [data-slot="stepper-separator"] {
-  background: transparent !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  opacity: 1 !important;
-  border: none !important;
-  border-top: 2px dashed var(--ppp-border) !important;
-  border-radius: 0 !important;
-  top: 1.25rem !important;
-}
-
-.ppp-page [data-slot="stepper-item"][data-state="completed"] [data-slot="stepper-separator"] {
-  border-top-color: var(--ppp-primary) !important;
-}
-
-/* Área do passo atual – conteúdo centralizado */
+/* Área do passo */
 .ppp-form__step {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 320px;
 }
 
-/* Navegação (Anterior / Próximo / Enviar) – teal na marca */
-.ppp-form [data-slot="button"] {
-  font-family: inherit !important;
-  font-size: 0.875rem !important;
-  font-weight: 500 !important;
+/* Formulário e botões de navegação */
+.ppp-form {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+.ppp-form-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid hsl(var(--border));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.ppp-form-actions button {
+  min-height: 2.75rem;
+  font-weight: 500;
+  border-radius: var(--radius-lg);
+}
+.ppp-form-actions button[type="submit"] {
+  box-shadow: 0 1px 3px hsl(var(--primary) / 0.3);
 }
 
-.ppp-btn-primary {
-  background: var(--ppp-primary) !important;
-  border-color: var(--ppp-primary) !important;
-  color: #0C1222 !important;
+/* Tabela EPIs – texto do tema */
+.ppp-form-page [data-slot="table"] th,
+.ppp-form-page [data-slot="table"] td {
+  color: hsl(var(--foreground));
 }
 
-.ppp-btn-primary:hover:not(:disabled) {
-  background: var(--ppp-primary-hover) !important;
-  border-color: var(--ppp-primary-hover) !important;
-  color: #f1f5f9 !important;
+/* Card de prazo – destaque com primary suave */
+.ppp-form-page .ppp-card-prazo {
+  background: hsl(var(--primary) / 0.15) !important;
+  border-color: hsl(var(--primary) / 0.4) !important;
 }
 
-.ppp-btn-outline {
-  border-color: var(--ppp-border-strong) !important;
-  color: #e2e8f0 !important;
-}
-
-.ppp-btn-outline:hover:not(:disabled) {
-  background: var(--ppp-primary-muted) !important;
-  border-color: var(--ppp-primary) !important;
-  color: var(--ppp-primary) !important;
-}
-
-/* Card de prazo – destaque em teal */
-.ppp-page .ppp-card-prazo {
-  background: var(--ppp-primary-muted) !important;
-  border-color: rgba(0, 172, 212, 0.4) !important;
-}
-
-/* Card de prazo – texto padronizado */
-.ppp-page .ppp-card p {
-  font-family: inherit !important;
-  font-size: 0.875rem !important;
-  line-height: 1.5 !important;
-  color: #e2e8f0 !important;
+.ppp-form-page .ppp-card-prazo p {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: hsl(var(--foreground));
 }

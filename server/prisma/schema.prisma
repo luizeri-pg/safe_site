@@ -1,0 +1,179 @@
+// Safe-Site Backend - Banco de dados
+// Dados vêm apenas do BD e do backend; o front apenas envia submissões e consome APIs.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// --- Auth e estrutura ---
+model Empresa {
+  id           String   @id @default(cuid())
+  razaoSocial  String
+  nomeFantasia String?
+  cnpj         String   @unique
+  endereco     String?
+  telefone     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  usuarios    Usuario[]
+  cats        Cat[]
+  chamados    Chamado[]
+  cargos      Cargo[]
+  setoresGhe  SetorGhe[]
+  unidades    Unidade[]
+  ppps        SolicitacaoPpp[]
+  visitas     VisitaTecnica[]
+  solicitacoes Solicitacao[]
+}
+
+model Usuario {
+  id           String   @id @default(cuid())
+  empresaId    String?
+  email        String   @unique
+  passwordHash String
+  role         String   // 'client' | 'admin'
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  empresa Empresa? @relation(fields: [empresaId], references: [id], onDelete: SetNull)
+}
+
+// Listagem unificada para tela de Acompanhamento (admin vê todas; client vê da sua empresa)
+model Solicitacao {
+  id           Int      @id @default(autoincrement())
+  tipo         String   // 'Manuais e Procedimentos', 'Solicitação de PPP', 'Abertura de CAT', etc.
+  referenciaId String   // id (cuid) da entidade correspondente
+  empresaId    String
+  data         String   // data do registro (YYYY-MM-DD)
+  status       String   @default("Pendente") // Pendente, Em análise, Concluído
+  descricao    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+}
+
+// --- Abertura de CAT ---
+model Cat {
+  id        String   @id @default(cuid())
+  empresaId String
+  payload   String   // JSON: empregador, trabalhador, atividadeMomento, localIncidente, dadosAcidente, lesao, epc, episUtilizados, seguranca, atendimentoMedico, responsavel
+  status    String   @default("Pendente")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+}
+
+// --- Abertura de Chamado ---
+model Chamado {
+  id                   String   @id @default(cuid())
+  numero               String?  // gerado pelo backend (ex: 2025-001)
+  empresaId            String
+  titulo               String
+  descricao            String?
+  prioridade           String   // Baixa, Média, Alta
+  categoria            String?
+  solicitanteNome      String?
+  solicitanteEmail     String?
+  solicitanteTelefone  String?
+  status               String   @default("Aberto") // Aberto, Em atendimento, Resolvido, Fechado
+  dataAbertura         DateTime @default(now())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+}
+
+// --- Inclusão de Cargo ---
+model Cargo {
+  id                  String   @id @default(cuid())
+  empresaId           String
+  nomeCargo           String
+  cbo                 String?
+  setor               String?
+  descricaoAtividades  String?
+  grauRisco           String?
+  dataSolicitacao     String?
+  nomeSolicitante     String?
+  status              String   @default("Pendente")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+}
+
+// --- Inclusão de Setor | GHE ---
+model SetorGhe {
+  id               String   @id @default(cuid())
+  empresaId        String
+  nomeSetor        String
+  codigoSetor      String?
+  codigoGhe        String?
+  descricaoSetor   String?
+  dataSolicitacao  String?
+  nomeSolicitante  String?
+  status           String   @default("Pendente")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+}
+
+// --- Inclusão de Nova Unidade ---
+model Unidade {
+  id                String   @id @default(cuid())
+  empresaId         String
+  nomeUnidade       String
+  cnpjUnidade       String?
+  enderecoUnidade   String?
+  municipio         String?
+  uf                String?
+  telefoneUnidade   String?
+  dataSolicitacao   String?
+  nomeSolicitante   String?
+  status            String   @default("Pendente")
+  createdAt         DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+}
+
+// --- Solicitação de PPP (payload JSON com historicos e epis) ---
+model SolicitacaoPpp {
+  id        String   @id @default(cuid())
+  empresaId String
+  payload   String   // JSON: empresa, trabalhador, cat, historicos, epis, avaliacao ambiental, responsável legal, etc.
+  status    String   @default("Pendente")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+}
+
+// --- Solicitação de Visita Técnica ---
+model VisitaTecnica {
+  id                   String   @id @default(cuid())
+  empresaId            String
+  objetivoVisita       String?
+  dataPreferencial     String?
+  enderecoVisita       String?
+  municipio            String?
+  uf                   String?
+  descricaoNecessidade String?
+  tipoVisita           String?
+  dataSolicitacao      String?
+  nomeSolicitante      String?
+  emailSolicitante     String?
+  telefoneSolicitante  String?
+  status               String   @default("Pendente")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+}

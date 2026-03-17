@@ -7,6 +7,12 @@ import { mockAuthPlugin } from './vite-plugin-mock-auth'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), mockAuthPlugin()],
+  server: {
+    port: 5173,
+    strictPort: false,
+    // Desativa HMR para evitar erro "WebSocket closed without opened" no console.
+    hmr: false,
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

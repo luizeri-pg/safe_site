@@ -1,50 +1,82 @@
-# SafeSite API (Backend em C#)
+# Safe-Site Backend (C# + PostgreSQL)
 
-API ASP.NET Core 8 com autenticação JWT e endpoints para login e listagem de solicitações.
+API em **ASP.NET Core 8** com **PostgreSQL**. Todos os dados exibidos no front vêm do BD e do backend; o front apenas envia submissões e consome as APIs.
 
-## Pré-requisitos
+## Requisitos
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- **.NET 8 SDK**
+- **PostgreSQL** (local ou remoto)
 
-## Executar
+## Configuração
+
+1. Crie o banco no PostgreSQL (ex.: `createdb safesite` ou pelo pgAdmin).
+2. Ajuste a connection string em `SafeSite.Api/appsettings.json` ou `appsettings.Development.json`:
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Host=localhost;Database=safesite;Username=postgres;Password=SUA_SENHA;Port=5432"
+}
+```
+
+3. (Opcional) Ajuste o JWT em `appsettings.json`:
+
+```json
+"Jwt": {
+  "Secret": "sua-chave-secreta-muito-longa-minimo-32-caracteres",
+  "Issuer": "SafeSite",
+  "Audience": "SafeSite",
+  "ExpiresInMinutes": 30
+}
+```
+
+## Como rodar
 
 ```bash
 cd backend/SafeSite.Api
+dotnet restore
 dotnet run
 ```
 
-A API sobe em **http://localhost:5000**. O Swagger fica em http://localhost:5000/swagger.
+Em **Development**, o app usa `EnsureCreatedAsync()` na primeira execução para criar as tabelas no PostgreSQL e em seguida roda o **seed** (1 empresa + 2 usuários).
 
-## Conectar o frontend
+- **admin@safesite.com** — role `admin` (vê **todas** as solicitações em GET /api/solicitacoes)
+- **cliente@empresaalpha.com** — role `client` (vinculado à Empresa Alpha), senha **admin123**
+- **safe.teste** — role `client` (vinculado à Safe Gestão), senha **safeteste**
 
-No projeto React (raiz do repositório), crie ou edite `.env`:
+A API sobe em **http://localhost:3001**. No front, configure no `.env` da raiz do projeto:
 
 ```
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=http://localhost:3001
 ```
 
-Reinicie o `npm run dev` do frontend. O login e a listagem de solicitações passarão a usar a API em C# em vez do mock.
+## Migrations (opcional)
 
-**Importante:** desative o mock de auth no Vite quando estiver usando o backend real (comente ou remova o `mockAuthPlugin()` em `vite.config.ts`).
+Para usar **migrations** em vez de `EnsureCreated`:
 
-## Usuários de teste (seed)
+```bash
+cd backend/SafeSite.Api
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
 
-| Usuário   | Senha  | Perfil  |
-|-----------|--------|---------|
-| admin     | admin  | admin   |
-| cliente1  | 123    | client  |
-| cliente2  | 123    | client  |
-
-- **admin**: vê o menu "Acompanhamento" e pode listar todas as solicitações.
-- **client**: vê apenas a área do cliente (criar solicitações, etc.).
+Requer o pacote de ferramentas: `dotnet tool install --global dotnet-ef`
 
 ## Endpoints
 
-- **POST /auth/login** – Login (body: `{ "username", "password" }`). Retorna `resultado.access_token` e `resultado.role`.
-- **GET /api/solicitacoes** – Lista todas as solicitações (requer token e role admin). Query: `tipo`, `status`, `busca`.
+- **POST /auth/login** — Login (body: `username`, `password`). Retorna `access_token` e dados da empresa.
+- **GET /api/solicitacoes** — Listagem unificada (Acompanhamento). Query: `tipo`, `status`, `busca`. Requer Bearer token.
+- **PATCH /api/solicitacoes/{id}** — Atualiza `status` e/ou `descricao`. Requer Bearer token.
 
-## Banco de dados
+Recursos por entidade (todos com Bearer token):
 
-Por padrão usa SQLite com arquivo `safesite.db` na pasta do projeto. As tabelas são criadas automaticamente na primeira execução, com usuários e solicitações de exemplo.
+| Recurso            | GET (lista) | GET /:id | POST (criar) |
+|--------------------|-------------|----------|--------------|
+| /api/cats          | Sim         | Sim      | payload      |
+| /api/chamados      | Sim         | Sim      | empresa, chamado, solicitante |
+| /api/cargos        | Sim         | Sim      | empresa, cargo, solicitacao   |
+| /api/setores-ghe   | Sim         | Sim      | empresa, setorGhe, solicitacao |
+| /api/unidades      | Sim         | Sim      | empresa, unidade, solicitacao  |
+| /api/ppp           | Sim         | Sim      | payload      |
+| /api/visitas       | Sim         | Sim      | empresa, visita, solicitacao   |
 
-Para trocar para SQL Server ou outro provedor, altere a connection string em `appsettings.json` e o pacote EF no `.csproj`.
+Respostas em JSON usam **snake_case** (ex.: `empresa_id`, `access_token`) para compatibilidade com o frontend.

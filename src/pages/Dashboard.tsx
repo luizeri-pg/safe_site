@@ -10,7 +10,9 @@ import {
   Line,
 } from 'recharts';
 import { FileCheck, Clock, FileText } from 'lucide-react';
-import './Dashboard.css';
+import { PageHeader } from '@/components/PageHeader';
+import { PageContent } from '@/components/PageContent';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const BAR_DATA = [
   { name: 'Jan', valor: 12 },
@@ -29,97 +31,125 @@ const LINE_DATA = [
   { name: 'Sex', qtd: 6 },
 ];
 
+const CHART_GRID_STROKE = 'hsl(var(--border))';
+const CHART_AXIS_FILL = 'hsl(var(--muted-foreground))';
+const CHART_TOOLTIP_BG = 'hsl(var(--card))';
+const CHART_TOOLTIP_BORDER = 'hsl(var(--border))';
+const CHART_PRIMARY = 'hsl(var(--primary))';
+
 export default function Dashboard() {
   return (
-    <div className="dashboard">
-      <header className="dashboard-header">
-        <h1 className="dashboard-title">Dashboard</h1>
-        <p className="dashboard-subtitle">Visão geral da Área do Cliente</p>
-      </header>
+    <PageContent>
+      <PageHeader
+        title="Dashboard"
+        description="Visão geral da Área do Cliente"
+      />
 
-      <div className="dashboard-kpis">
-        <div className="dashboard-kpi">
-          <div className="dashboard-kpi-icon dashboard-kpi-icon--teal">
-            <FileCheck size={24} />
-          </div>
-          <div className="dashboard-kpi-content">
-            <span className="dashboard-kpi-value">68%</span>
-            <span className="dashboard-kpi-label">Concluídos</span>
-          </div>
-        </div>
-        <div className="dashboard-kpi">
-          <div className="dashboard-kpi-icon dashboard-kpi-icon--blue">
-            <Clock size={24} />
-          </div>
-          <div className="dashboard-kpi-content">
-            <span className="dashboard-kpi-value">22%</span>
-            <span className="dashboard-kpi-label">Em andamento</span>
-          </div>
-        </div>
-        <div className="dashboard-kpi">
-          <div className="dashboard-kpi-icon dashboard-kpi-icon--gray">
-            <FileText size={24} />
-          </div>
-          <div className="dashboard-kpi-content">
-            <span className="dashboard-kpi-value">10%</span>
-            <span className="dashboard-kpi-label">Pendentes</span>
-          </div>
-        </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Card>
+          <CardContent className="flex flex-row items-center gap-4 pt-6">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
+              <FileCheck className="size-5" />
+            </div>
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-2xl font-semibold tabular-nums tracking-tight text-foreground">
+                68%
+              </span>
+              <span className="text-sm text-muted-foreground">Concluídos</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex flex-row items-center gap-4 pt-6">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/30 text-primary">
+              <Clock className="size-5" />
+            </div>
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-2xl font-semibold tabular-nums tracking-tight text-foreground">
+                22%
+              </span>
+              <span className="text-sm text-muted-foreground">Em andamento</span>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex flex-row items-center gap-4 pt-6">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+              <FileText className="size-5" />
+            </div>
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-2xl font-semibold tabular-nums tracking-tight text-foreground">
+                10%
+              </span>
+              <span className="text-sm text-muted-foreground">Pendentes</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="dashboard-charts">
-        <section className="dashboard-card">
-          <h2 className="dashboard-card-title">Atividade mensal</h2>
-          <div className="dashboard-chart-wrap">
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={BAR_DATA} margin={{ top: 16, right: 16, left: 0, bottom: 8 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
-                <XAxis dataKey="name" stroke="rgba(241,245,249,0.6)" fontSize={13} tickLine={false} />
-                <YAxis stroke="rgba(241,245,249,0.6)" fontSize={13} tickLine={false} axisLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    background: 'rgba(30,41,59,0.98)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    borderRadius: '10px',
-                    padding: '10px 14px',
-                  }}
-                  labelStyle={{ color: '#f1f5f9', marginBottom: 4 }}
-                />
-                <Bar dataKey="valor" fill="#00ACD4" radius={[6, 6, 0, 0]} maxBarSize={48} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-semibold">Atividade mensal</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="h-[280px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={BAR_DATA} margin={{ top: 16, right: 16, left: 0, bottom: 8 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_STROKE} vertical={false} />
+                  <XAxis dataKey="name" stroke={CHART_AXIS_FILL} fontSize={12} tickLine={false} />
+                  <YAxis stroke={CHART_AXIS_FILL} fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      background: CHART_TOOLTIP_BG,
+                      border: `1px solid ${CHART_TOOLTIP_BORDER}`,
+                      borderRadius: 'var(--radius)',
+                      padding: '8px 12px',
+                      fontSize: '12px',
+                    }}
+                    labelStyle={{ color: 'hsl(var(--foreground))', marginBottom: 4 }}
+                  />
+                  <Bar dataKey="valor" fill={CHART_PRIMARY} radius={[4, 4, 0, 0]} maxBarSize={48} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
 
-        <section className="dashboard-card">
-          <h2 className="dashboard-card-title">Solicitações na semana</h2>
-          <div className="dashboard-chart-wrap">
-            <ResponsiveContainer width="100%" height={280}>
-              <LineChart data={LINE_DATA} margin={{ top: 16, right: 16, left: 0, bottom: 8 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
-                <XAxis dataKey="name" stroke="rgba(241,245,249,0.6)" fontSize={13} tickLine={false} />
-                <YAxis stroke="rgba(241,245,249,0.6)" fontSize={13} tickLine={false} axisLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    background: 'rgba(30,41,59,0.98)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    borderRadius: '10px',
-                    padding: '10px 14px',
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="qtd"
-                  stroke="#00ACD4"
-                  strokeWidth={2.5}
-                  dot={{ fill: '#00ACD4', strokeWidth: 0, r: 5 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-semibold">Solicitações na semana</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="h-[280px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={LINE_DATA} margin={{ top: 16, right: 16, left: 0, bottom: 8 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_STROKE} vertical={false} />
+                  <XAxis dataKey="name" stroke={CHART_AXIS_FILL} fontSize={12} tickLine={false} />
+                  <YAxis stroke={CHART_AXIS_FILL} fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      background: CHART_TOOLTIP_BG,
+                      border: `1px solid ${CHART_TOOLTIP_BORDER}`,
+                      borderRadius: 'var(--radius)',
+                      padding: '8px 12px',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="qtd"
+                    stroke={CHART_PRIMARY}
+                    strokeWidth={2}
+                    dot={{ fill: CHART_PRIMARY, strokeWidth: 0, r: 4 }}
+                    activeDot={{ r: 5 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </PageContent>
   );
 }

@@ -1,5 +1,7 @@
 import { useLocation } from 'react-router-dom';
-import './Manuais.css';
+import { PageHeader } from '@/components/PageHeader';
+import { PageContent } from '@/components/PageContent';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface SectionPageProps {
   title: string;
@@ -17,36 +19,37 @@ export default function SectionPage({ title, basePath, viewLabel }: SectionPageP
   const subtitle = viewLabel ?? (isAdicionar ? 'Nova solicitação' : 'Lista de solicitações');
 
   return (
-    <div className="manuais-page">
-      <div className="manuais-main">
-        <h1 className="manuais-titulo">{title}</h1>
-        <p className="manuais-subtitulo">{subtitle}</p>
+    <PageContent>
+      <PageHeader title={title} description={subtitle} />
 
-        {isChamadoView ? (
-          <section className="manuais-submenu">
-            <h2 className="manuais-submenu-titulo">{viewLabel}</h2>
-            <p className="manuais-empty">
-              {pathEnd === 'painel'
-                ? 'Painel de acompanhamento em construção. Em breve você poderá acompanhar os chamados aqui.'
-                : 'Formulário de abertura de chamado em construção. Em breve você poderá gerar chamados por aqui.'}
-            </p>
-          </section>
-        ) : isAdicionar ? (
-          <section className="manuais-adicionar">
-            <h2 className="manuais-adicionar-titulo">Nova solicitação</h2>
-            <p className="manuais-empty">
-              Formulário de solicitação em construção. Em breve você poderá enviar por aqui.
-            </p>
-          </section>
-        ) : (
-          <section className="manuais-submenu">
-            <h2 className="manuais-submenu-titulo">Todos os registros</h2>
-            <p className="manuais-empty">
-              Nenhum registro. Use &quot;Adicionar&quot; no menu para criar uma nova solicitação.
-            </p>
-          </section>
-        )}
-      </div>
-    </div>
+      <Card>
+        <CardContent className="pt-6">
+          {isChamadoView ? (
+            <>
+              <h2 className="mb-2 text-base font-semibold text-foreground">{viewLabel}</h2>
+              <p className="text-sm text-muted-foreground">
+                {pathEnd === 'painel'
+                  ? 'Painel de acompanhamento em construção. Em breve você poderá acompanhar os chamados aqui.'
+                  : 'Formulário de abertura de chamado em construção. Em breve você poderá gerar chamados por aqui.'}
+              </p>
+            </>
+          ) : isAdicionar ? (
+            <>
+              <h2 className="mb-2 text-base font-semibold text-foreground">Nova solicitação</h2>
+              <p className="text-sm text-muted-foreground">
+                Formulário de solicitação em construção. Em breve você poderá enviar por aqui.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="mb-2 text-base font-semibold text-foreground">Todos os registros</h2>
+              <p className="text-sm text-muted-foreground">
+                Nenhum registro. Use &quot;Adicionar&quot; no menu para criar uma nova solicitação.
+              </p>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </PageContent>
   );
 }

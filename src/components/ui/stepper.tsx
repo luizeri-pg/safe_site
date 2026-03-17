@@ -136,14 +136,19 @@ function StepperIndicator({
 }
 
 
-function StepperSeparator({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+interface StepperSeparatorProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Use "custom" quando o visual da linha for definido por CSS externo (ex.: linha pontilhada). */
+  variant?: 'default' | 'custom';
+}
+
+function StepperSeparator({ className, variant = 'default', ...props }: StepperSeparatorProps) {
   return (
     <div
       data-slot="stepper-separator"
       role="presentation"
       className={cn(
-        'absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-muted',
-        'group-data-[state=completed]:bg-primary',
+        'absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full',
+        variant === 'default' && 'bg-muted group-data-[state=completed]:bg-primary',
         className
       )}
       {...props}

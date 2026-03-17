@@ -8,8 +8,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
-const TEAL = '#00ACD4'
-
 export interface LoginFormProps extends React.ComponentProps<"form"> {
   onSubmit?: (e: FormEvent<HTMLFormElement>) => void
   error?: string | null
@@ -31,15 +29,15 @@ export function LoginForm({
     >
       <FieldGroup>
         <div className="flex flex-col gap-1 text-center">
-          <h1 className="font-bold text-white" style={{ fontSize: '3.1em' }}>
+          <h1 className="text-3xl font-bold text-primary-foreground">
             Seja bem-vindo!
           </h1>
-          <p className="text-sm text-white">
+          <p className="text-sm text-primary-foreground/90">
             O conteúdo deste site é restrito, autentifique-se
           </p>
         </div>
         <Field>
-          <FieldLabel htmlFor="username" className="text-white">
+          <FieldLabel htmlFor="username" className="text-primary-foreground">
             Login
           </FieldLabel>
           <Input
@@ -49,11 +47,11 @@ export function LoginForm({
             placeholder="seu.login"
             required
             disabled={isLoading}
-            className="h-11 border border-white/70 bg-gray-800/50 px-4 py-2.5 text-base text-white placeholder:text-gray-500 focus-visible:border-[#00ACD4] focus-visible:ring-[#00ACD4] md:h-12 md:text-lg"
+            className="bg-background/90 border-border text-foreground placeholder:text-muted-foreground"
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="password" className="text-white">
+          <FieldLabel htmlFor="password" className="text-primary-foreground">
             Senha
           </FieldLabel>
           <Input
@@ -63,18 +61,18 @@ export function LoginForm({
             placeholder="********"
             required
             disabled={isLoading}
-            className="h-11 border border-white/70 bg-gray-800/50 px-4 py-2.5 text-base text-white placeholder:text-gray-500 focus-visible:border-[#00ACD4] focus-visible:ring-[#00ACD4] md:h-12 md:text-lg"
+            className="bg-background/90 border-border text-foreground placeholder:text-muted-foreground"
           />
         </Field>
         {error && (
-          <p className="text-sm text-red-400">{error}</p>
+          <p className="text-sm text-destructive">{error}</p>
         )}
         <Field>
           <Button
             type="submit"
             disabled={isLoading}
-            className="h-10 w-full border border-white/70 font-medium md:h-11"
-            style={{ backgroundColor: TEAL }}
+            size="lg"
+            className="w-full"
           >
             {isLoading ? "Entrando..." : "Entrar"}
           </Button>

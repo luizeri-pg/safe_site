@@ -97,19 +97,21 @@
 }
 
 .dashboard-card {
-  padding: 1.35rem;
-  background: rgba(30, 41, 59, 0.45);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
+  padding: 0;
+}
+
+.dashboard-card-header {
+  padding-bottom: 0;
+}
+
+.dashboard-card-content {
+  padding-top: 0.25rem;
 }
 
 .dashboard-card-title {
-  margin: 0 0 1.1rem;
+  margin: 0;
   font-size: 1.05rem;
   font-weight: 600;
-  color: #f1f5f9;
 }
 
 .dashboard-chart-wrap {
