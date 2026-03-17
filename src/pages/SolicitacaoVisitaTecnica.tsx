@@ -61,6 +61,7 @@ export default function SolicitacaoVisitaTecnica() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeStep !== VISITA_STEPS.length) return;
     const payload = {
       empresa: {
         razaoSocial: userEmpresaRazaoSocial ?? razaoSocial,

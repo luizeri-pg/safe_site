@@ -59,6 +59,7 @@ export default function InclusaoCargo() {
   const [submitting, setSubmitting] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeStep !== CARGO_STEPS.length) return;
     const payload = {
       empresa: {
         razaoSocial: userEmpresaRazaoSocial ?? razaoSocial,

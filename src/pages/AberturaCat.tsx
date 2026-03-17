@@ -176,6 +176,7 @@ export default function AberturaCat() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeStep !== CAT_STEPS.length) return;
     const payload = {
       empregador: {
         razaoSocial: userEmpresaRazaoSocial ?? razaoSocial,

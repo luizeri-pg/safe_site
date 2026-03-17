@@ -161,6 +161,7 @@ export default function SolicitacaoPpp() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeStep !== PPP_STEPS.length) return;
     const payload = {
       empresa: {
         razaoSocial: userEmpresaRazaoSocial ?? razaoSocial,

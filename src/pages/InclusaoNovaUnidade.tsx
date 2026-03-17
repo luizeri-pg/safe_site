@@ -60,6 +60,7 @@ export default function InclusaoNovaUnidade() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeStep !== UNIDADE_STEPS.length) return;
     setSubmitError(null);
     const payload = {
       empresa: {

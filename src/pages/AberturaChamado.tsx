@@ -136,6 +136,7 @@ export default function AberturaChamado() {
 
   const handleSubmitChamado = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeStep !== CHAMADO_STEPS.length) return;
     const payload = {
       empresa: {
         razaoSocial: userEmpresaRazaoSocial ?? razaoSocial,

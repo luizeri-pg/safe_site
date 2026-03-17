@@ -54,6 +54,7 @@ export default function InclusaoSetorGhe() {
   const [submitting, setSubmitting] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeStep !== SETOR_STEPS.length) return;
     const payload = {
       empresa: {
         razaoSocial: userEmpresaRazaoSocial ?? razaoSocial,
