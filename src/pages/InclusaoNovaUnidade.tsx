@@ -58,8 +58,11 @@ export default function InclusaoNovaUnidade() {
   const [submitting, setSubmitting] = useState(false);
   const [, setSubmitError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
+  };
+
+  const enviarSolicitacao = async () => {
     if (activeStep !== UNIDADE_STEPS.length) return;
     setSubmitError(null);
     const payload = {
@@ -128,7 +131,7 @@ export default function InclusaoNovaUnidade() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="unidade-form w-full space-y-6 mt-6">
+      <form onSubmit={handleSubmitForm} className="unidade-form w-full space-y-6 mt-6">
         <div className="unidade-form__step min-h-[320px] w-full">
           {activeStep === 1 && (
             <Card className="unidade-card">
@@ -246,7 +249,7 @@ export default function InclusaoNovaUnidade() {
           {activeStep < 3 ? (
             <Button type="button" variant="default" size="lg" className="w-full min-w-0" onClick={() => setActiveStep((s) => s + 1)}>Próximo</Button>
           ) : (
-            <Button type="submit" variant="default" size="lg" className="w-full min-w-0" disabled={submitting}>
+            <Button type="button" variant="default" size="lg" className="w-full min-w-0" disabled={submitting} onClick={enviarSolicitacao}>
               {submitting ? 'Enviando...' : 'Enviar solicitação'}
             </Button>
           )}

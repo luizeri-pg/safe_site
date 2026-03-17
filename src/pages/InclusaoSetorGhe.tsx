@@ -52,8 +52,11 @@ export default function InclusaoSetorGhe() {
 
   const [activeStep, setActiveStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
+  };
+
+  const enviarSolicitacao = async () => {
     if (activeStep !== SETOR_STEPS.length) return;
     const payload = {
       empresa: {
@@ -112,7 +115,7 @@ export default function InclusaoSetorGhe() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="setor-form w-full space-y-6 mt-6">
+      <form onSubmit={handleSubmitForm} className="setor-form w-full space-y-6 mt-6">
         <div className="setor-form__step min-h-[320px] w-full">
           {activeStep === 1 && (
             <Card className="setor-card">
@@ -219,7 +222,7 @@ export default function InclusaoSetorGhe() {
           {activeStep < 3 ? (
             <Button type="button" variant="default" size="lg" className="w-full min-w-0" onClick={() => setActiveStep((s) => s + 1)}>Próximo</Button>
           ) : (
-            <Button type="submit" variant="default" size="lg" className="w-full min-w-0" disabled={submitting}>
+            <Button type="button" variant="default" size="lg" className="w-full min-w-0" disabled={submitting} onClick={enviarSolicitacao}>
               {submitting ? 'Enviando...' : 'Enviar solicitação'}
             </Button>
           )}

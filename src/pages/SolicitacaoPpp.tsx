@@ -159,8 +159,11 @@ export default function SolicitacaoPpp() {
   const updateEpi = (id: string, field: keyof EpiItem, value: string) =>
     setEpis((prev) => prev.map((e) => (e.id === id ? { ...e, [field]: value } : e)));
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
+  };
+
+  const enviarSolicitacao = async () => {
     if (activeStep !== PPP_STEPS.length) return;
     const payload = {
       empresa: {
@@ -247,7 +250,7 @@ export default function SolicitacaoPpp() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="ppp-form w-full space-y-6 mt-6">
+      <form onSubmit={handleSubmitForm} className="ppp-form w-full space-y-6 mt-6">
         <div className="ppp-form__step min-h-[320px] w-full">
           {activeStep === 1 && (
             <Card className="ppp-card">
@@ -773,7 +776,7 @@ export default function SolicitacaoPpp() {
               Próximo
             </Button>
           ) : (
-            <Button type="submit" variant="default" size="lg" className="w-full min-w-0" disabled={submitting}>
+            <Button type="button" variant="default" size="lg" className="w-full min-w-0" disabled={submitting} onClick={enviarSolicitacao}>
               {submitting ? 'Enviando...' : 'Enviar solicitação de PPP'}
             </Button>
           )}

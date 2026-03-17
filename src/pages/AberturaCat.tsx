@@ -174,8 +174,11 @@ export default function AberturaCat() {
   const toggleEpi = (epi: string) =>
     setEpisUtilizados((prev) => ({ ...prev, [epi]: !prev[epi] }));
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
+  };
+
+  const enviarQuestionario = async () => {
     if (activeStep !== CAT_STEPS.length) return;
     const payload = {
       empregador: {
@@ -290,7 +293,7 @@ export default function AberturaCat() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="cat-form w-full space-y-6 mt-6">
+      <form onSubmit={handleSubmitForm} className="cat-form w-full space-y-6 mt-6">
         <div className="cat-form__step min-h-[320px] w-full">
           {/* 1. Dados do empregador */}
           {activeStep === 1 && (
@@ -787,7 +790,7 @@ export default function AberturaCat() {
               Próximo
             </Button>
           ) : (
-            <Button type="submit" variant="default" size="lg" className="w-full min-w-0" disabled={submitting}>
+            <Button type="button" variant="default" size="lg" className="w-full min-w-0" disabled={submitting} onClick={enviarQuestionario}>
               {submitting ? 'Enviando...' : 'Enviar questionário e gerar CAT'}
             </Button>
           )}

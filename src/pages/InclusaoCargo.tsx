@@ -57,8 +57,11 @@ export default function InclusaoCargo() {
 
   const [activeStep, setActiveStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
+  };
+
+  const enviarSolicitacao = async () => {
     if (activeStep !== CARGO_STEPS.length) return;
     const payload = {
       empresa: {
@@ -117,7 +120,7 @@ export default function InclusaoCargo() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="cargo-form w-full space-y-6 mt-6">
+      <form onSubmit={handleSubmitForm} className="cargo-form w-full space-y-6 mt-6">
         <div className="cargo-form__step min-h-[320px] w-full">
           {activeStep === 1 && (
             <Card className="cargo-card">
@@ -243,7 +246,7 @@ export default function InclusaoCargo() {
               Próximo
             </Button>
           ) : (
-            <Button type="submit" variant="default" size="lg" className="w-full min-w-0" disabled={submitting}>
+            <Button type="button" variant="default" size="lg" className="w-full min-w-0" disabled={submitting} onClick={enviarSolicitacao}>
               {submitting ? 'Enviando...' : 'Enviar solicitação'}
             </Button>
           )}

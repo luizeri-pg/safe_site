@@ -134,8 +134,11 @@ export default function AberturaChamado() {
     return true;
   });
 
-  const handleSubmitChamado = async (e: React.FormEvent) => {
+  const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
+  };
+
+  const enviarChamado = async () => {
     if (activeStep !== CHAMADO_STEPS.length) return;
     const payload = {
       empresa: {
@@ -313,7 +316,7 @@ export default function AberturaChamado() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmitChamado} className="chamado-form w-full space-y-6 mt-6">
+      <form onSubmit={handleSubmitForm} className="chamado-form w-full space-y-6 mt-6">
         <div className="chamado-form__step min-h-[320px] w-full">
           {activeStep === 1 && (
             <Card className="chamado-card">
@@ -435,9 +438,9 @@ export default function AberturaChamado() {
           {activeStep < 3 ? (
             <Button type="button" variant="default" size="lg" className="w-full min-w-0" onClick={() => setActiveStep((s) => s + 1)}>Próximo</Button>
           ) : (
-            <Button type="submit" variant="default" size="lg" className="w-full min-w-0" disabled={submitting}>
-            {submitting ? 'Enviando...' : 'Abrir chamado'}
-          </Button>
+            <Button type="button" variant="default" size="lg" className="w-full min-w-0" disabled={submitting} onClick={enviarChamado}>
+              {submitting ? 'Enviando...' : 'Abrir chamado'}
+            </Button>
           )}
         </div>
       </form>
